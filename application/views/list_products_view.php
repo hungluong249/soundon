@@ -257,7 +257,7 @@
 									</div>
 
 									<div class="buttons">
-										<button role="button" class="btn btn-light add-to-cart" data-id="<?php echo $value['id'] ?>" data-name="<?php echo $value['title'] ?>" data-price="<?php echo $value['price'] ?>">
+										<button role="button" class="btn btn-light add-to-cart" data-id="<?php echo $value['id'] ?>" data-quantity="1" data-price="<?php echo $value['price'] ?>" data-product='<?php echo json_encode($value) ?>'>
 											Add to Cart
 										</button>
 										<a href="<?php echo base_url('products/detail/') . $value['id'] ?>" role="button" class="btn btn-link">

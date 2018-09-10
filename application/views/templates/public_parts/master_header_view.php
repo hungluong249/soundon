@@ -22,6 +22,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<!-- Style -->
 	<link rel="stylesheet" href="<?php echo site_url('assets/sass/') ?>style.css">
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 
 </head>
 
@@ -68,7 +69,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 					<li>
 						<a href="<?php echo base_url('')?>">
-							<i class="fas fa-shopping-cart"></i> 0
+							<i class="fas fa-shopping-cart"></i> <span id="total-cart">0</span>
 						</a>
 					</li>
 					<li>
