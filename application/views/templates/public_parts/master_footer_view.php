@@ -15,7 +15,31 @@
 
 		<div class="container">
 			<div class="row head">
-				<div class="col-xs-12 col-sm-6 col-xl-3 item">
+				<div class="col-xs-12 col-sm-6 col-xl-2 item">
+					<h3 class="title-sm">Product</h3>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('about/') ?>">
+								Speakers
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('menu/') ?>">
+								Headphones
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('blogs/') ?>">
+								Accessories
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-xl-2 item">
+					<h3 class="title-sm">About Us</h3>
+
 					<ul>
 						<li>
 							<a href="<?php echo base_url('about/') ?>">
@@ -24,85 +48,68 @@
 						</li>
 						<li>
 							<a href="<?php echo base_url('menu/') ?>">
-								Menu
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('blogs/') ?>">
-								Blogs
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('contact/') ?>">
 								Contact Us
-							</a>
-						</li>
-						<li> </li>
-						<li> </li>
-						<li> </li>
-						<li>
-							<a href="<?php echo base_url('reservations/') ?>">
-								Reservation
 							</a>
 						</li>
 					</ul>
 				</div>
 
+				<div class="col-xs-12 col-sm-6 col-xl-2 item">
+					<h3 class="title-sm">Help</h3>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('about/') ?>">
+								Help
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('menu/') ?>">
+								Terms & Conditions
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-xl-6 item">
+					<h3 class="title-sm">Help</h3>
+
+					<div class="input-group">
+						<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="button-addon2" placeholder="Enter email">
+						<button type="button " class="btn btn-default" id="button-addon2">Subscribe</button>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="row body">
+				<div class="col-xs-12 col-sm-12 col-md-12">
+					<h3 class="title-sm">Showroom</h3>
+				</div>
+
+				<?php for ($i = 0; $i <4; $i++) { ?>
 				<div class="col-xs-12 col-sm-6 col-xl-3 item">
 					<p class="paragraph">Location</p>
 					<p class="paragraph">
 						917 Rosenbaum Lodge Apt. 831
 					</p>
+					<a href="tel:(84) 1234 5678">
+						(84) 1234 5678
+					</a>
+					<a href="mailto:showroom1@soundon.store">
+						showroom1@soundon.store
+					</a>
 				</div>
+				<?php } ?>
 
-				<div class="col-xs-12 col-sm-6 col-xl-3 item">
-					<p class="paragraph">Reservations</p>
-					<table class="table">
-						<tr>
-							<td>Phone</td>
-							<td><a href="tel:(84)12345678">(84) 1234 5678</a></td>
-						</tr>
-						<tr>
-							<td>Email</td>
-							<td><a href="mailto:info@teddygrillhouse.vn">info@teddygrillhouse.vn</a></td>
-						</tr>
-					</table>
-				</div>
-
-				<div class="col-xs-12 col-sm-6 col-xl-3 item">
-					<p class="paragraph">Subscribe</p>
-					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-					<button type="button" class="btn btn-link">Subscribe</button>
-				</div>
 			</div>
 
 			<div class="row foot">
 				<div class="col">
-					<p class="paragraph">2018 Teddy’s Grill House</p>
+					<p class="paragraph">2018 soundon</p>
 				</div>
 				<div class="col">
-					<ul>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-facebook-square"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-twitter-square"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-instagram"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-youtube-square"></i>
-							</a>
-						</li>
-					</ul>
+					<p class="paragraph"> &copy; All Copyrights Reversed.</p>
 				</div>
 			</div>
 		</div>
@@ -121,6 +128,9 @@
 
 <!-- Script -->
 <script src="<?php echo site_url('assets/js/') ?>script.js"></script>
+
+<!-- Cart -->
+<script src="<?php echo site_url('assets/js/') ?>cart.js"></script>
 
 
 </body>

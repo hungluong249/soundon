@@ -1,0 +1,130 @@
+/*
+===========================
+===========================
+
+CHECKOUT STYLE
+
+Author: hung.luong@matocreative.vn
+
+===========================
+===========================
+ */
+
+#checkout{
+    .cover{
+        .mask{
+            width: 100%;
+            height: 30vh;
+        }
+    }
+
+    .container{
+        padding-top: 50px;
+        padding-bottom: 50px;
+
+        .row{
+            .left{
+                #checklist{
+                    padding: 30px;
+
+                    background-color: #f7f7f7;
+
+                    .item{
+                        padding-top: 15px;
+                        padding-bottom: 15px;
+                        border-bottom: 1px solid $gray-light;
+
+                        &:last-of-type{
+                            border-bottom: none;
+                        }
+
+                        .item-left{
+                            width: 75%;
+
+                            .item-image{
+                                .mask{
+                                    width: 150px;
+                                    height: 115px;
+                                }
+                            }
+
+                            .item-info{
+                                width: calc(100% - 150px);
+
+                                h3{
+                                    &.title-sm{
+                                        font-family: "webFont-m";
+
+                                        color: $gray;
+                                    }
+                                }
+
+                                .item-buttons{
+                                    input{
+                                        width: 80px;
+                                    }
+
+                                    .btn{
+                                        margin-left: 15px;
+
+                                        font-family: "webFont-b";
+                                        color: $primary;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #extra{
+                    .item{
+                        padding: 15px;
+                        margin-top: 15px;
+
+                        background-color: $gray-lighter;
+
+                        h3{
+                            margin-bottom: 0;
+                            color: $gray;
+                        }
+
+                        &.item-protect{
+                            select{
+                                width: 135px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .right{
+                #bill{
+                    table{
+                        tr{
+                            td{
+                                border-top-color: transparent;
+
+                                &:last-of-type{
+                                    text-align: right;
+                                }
+                            }
+
+                            &:last-of-type{
+                                td{
+                                    border-top-color: #dee2e6;
+
+                                    font-family: "webFont-b";
+                                }
+                            }
+                        }
+                    }
+
+                    .btn{
+                        width: 100%;
+                        margin-bottom: 15px;
+                    }
+                }
+            }
+        }
+    }
+}

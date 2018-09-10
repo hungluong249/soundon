@@ -12,12 +12,17 @@ Author: hung.luong@matocreative.vn
 
 @font-face {
     font-family: 'webFont-r';
-    src: url("../fonts/Exo-Regular.ttf");
+    src: url("../fonts/SanFranciscoText-Regular.otf");
 }
 
 @font-face {
     font-family: 'webFont-b';
-    src: url("../fonts/Exo-Black.ttf");
+    src: url("../fonts/SanFranciscoText-Bold.otf");
+}
+
+@font-face {
+    font-family: 'webFont-m';
+    src: url("../fonts/SanFranciscoText-Medium.otf");
 }
 
 body{
@@ -57,7 +62,7 @@ h3{
     font-family: "webFont-b";
 
     &.title-sm{
-        font-size: 1.125rem;
+        font-size: 1.5rem;
     }
 
     &.subtitle-md{
@@ -71,7 +76,7 @@ h3{
 h4{
     &.subtitle-sm{
         font-family: "webFont-r";
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
 }
 

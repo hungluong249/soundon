@@ -13,7 +13,7 @@ Author: hung.luong@matocreative.vn
 footer{
     clear: both;
 
-    background-color: $gray-draker;
+    @include gradient-primary;
 
     .container-fluid{
         padding-left: 0;
@@ -51,48 +51,35 @@ footer{
         padding-bottom: 50px;
 
         .row{
+
+            padding-top: 30px;
+            padding-bottom: 30px;
+
+            border-bottom: 1px solid #fff;
+
+            color: #fff;
+
+            font-family: "webFont-m";
+
+            p{
+                &.paragraph{
+                    color: #fff;
+                }
+            }
+
             &.head{
                 .item{
                     ul{
+                        margin-top: 30px;
+
                         li{
                             a{
-                                font-family: "webFont-b";
-                                font-size: 1.25rem;
 
-                                color: $gray;
+                                font-size: 1rem;
 
-                                &:hover{
-                                    color: #fff;
-                                }
-                            }
-
-                            &:last-of-type{
-                                a{
-                                    color: #fff;
-                                }
-                            }
-                        }
-                    }
-
-                    p{
-                        &.paragraph{
-                            color: #fff;
-                        }
-                    }
-
-                    table{
-                        tr{
-                            td{
-                                border-top-color: transparent;
                                 color: #fff;
 
-                                padding-top: 0;
-
-                                &:first-of-type{
-                                    padding-left: 0;
-                                }
-
-                                a{
+                                &:hover{
                                     color: #fff;
                                 }
                             }
@@ -100,44 +87,35 @@ footer{
                     }
 
                     .form-control{
-                        color: #fff;
-                        border: none;
-                        background-color: transparent;
-
-                        padding-left: 0;
-                        margin-top: -7px;
+                        padding-left: 15px;
 
                         &:focus{
                             box-shadow: none;
                         }
                     }
+                }
+            }
 
-                    /* Change color of input */
-                    ::-webkit-input-placeholder{
-                        color: #fff;
+            &.body{
+                h3{
+                    &.title-sm{
+                        margin-bottom: 30px;
                     }
+                }
 
-                    ::-moz-placeholder{
+                .item{
+                    a{
                         color: #fff;
-                    }
 
-                    :-ms-input-placeholder {
-                        color: #fff;
-                    }
-
-                    :-moz-placeholder{
-                        color: #fff;
-                    }
-
-                    .btn-link{
-                        color: #fff;
-                        padding-left: 0;
+                        &:hover{
+                            color: #fff;
+                        }
                     }
                 }
             }
 
             &.foot{
-                margin-top: 50px;
+                border-bottom: none;
 
                 p{
                     &.paragraph{
@@ -145,28 +123,9 @@ footer{
                     }
                 }
 
-                ul{
-                    list-style: none;
-                    text-align: right;
-
-                    li{
-                        display: inline-block;
-                        color: #fff;
-
-                        a{
-                            color: #fff;
-
-                            &.active{
-                                font-family: "webFont-b";
-                                font-size: 1.25rem;
-                            }
-
-                            i{
-                                font-size: 1.25rem;
-
-                                margin-right: 10px;
-                            }
-                        }
+                .col{
+                    &:last-of-type{
+                        text-align: right;
                     }
                 }
             }
