@@ -1,17 +1,4 @@
-<script>
-	$(document).ready(function(){
-	   $.ajax({
-           type: 'GET',
-           url: '<?php echo base_url('products/') ?>',
-           dataType: 'json',
-           data: {
-               id: localStorage("id" , id)
-           }
-	   })
 
-		console.log(id);
-	});
-</script>
 
 <section id="checkout">
     <div class="cover">
@@ -24,40 +11,7 @@
         <div class="row">
             <div class="left col-xs-12 col-lg-8">
                 <div id="checklist">
-                    <div class="item">
-                        <div class="d-flex justify-content-between">
-                            <div class="item-left d-flex">
-                                <div class="item-image">
-                                    <div class="mask">
-                                        <img src="<?php echo site_url('assets/img/product/') ?>sp2.png" alt="image ">
-                                    </div>
-                                </div>
 
-                                <div class="item-info">
-                                    <h3 class="title-sm">Product Name</h3>
-                                    <p class="paragraph">Product Color</p>
-
-                                    <div class="item-buttons">
-                                        <form class="d-flex">
-                                            <input type="number" class="form-control" min="0">
-
-                                            <a class="btn btn-light" href="<?php echo base_url('products/detail/') ?>" role="button">
-                                                Edit
-                                            </a>
-
-                                            <button class="btn btn-light" role="button">
-                                                Remove
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item-right">
-                                <h3 class="title-sm">$ Price</h3>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div id="extra">
@@ -67,7 +21,7 @@
                         </h3>
                     </div>
 
-                    <div class="item item-protect">
+                    <!-- <div class="item item-protect">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="title-sm">
                                 Protection Plan
@@ -89,7 +43,7 @@
                                 Add Plan
                             </button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -122,3 +76,51 @@
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    var elmCartItem = '';
+    
+    cart.forEach( function(item, index) {
+        // var color = '';
+        // item.product.color.forEach(function(value, index){
+        //     color += '<p class="paragraph"><div style="width: 30px; height: 15px ;background-color: '+value[]+'"></div></p>';
+        // })
+        elmCartItem += `
+            <div class="item">
+                <div class="d-flex justify-content-between">
+                    <div class="item-left d-flex">
+                        <div class="item-image">
+                            <div class="mask">
+                                <img src="<?php echo site_url('assets/img/product/') ?>${item.product.image}" alt="image ">
+                            </div>
+                        </div>
+
+                        <div class="item-info">
+                            <h3 class="title-sm">${item.product.title}</h3>
+                                <p class="paragraph"><div style="width: 30px; height: 15px ;background-color: ${item.product.color[0]}"></div></p>
+                            <div class="item-buttons">
+                                <form class="d-flex">
+                                    <input type="number" class="form-control" min="0" value=${item.quantity}>
+
+                                    <a class="btn btn-light" href="<?php echo base_url('products/detail/') ?>" role="button">
+                                        Edit
+                                    </a>
+
+                                    <button class="btn btn-light" role="button">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h3 class="title-sm">$ ${item.product.price}</h3>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    $('#checklist').html(elmCartItem);
+</script>
+
