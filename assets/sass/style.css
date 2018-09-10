@@ -393,8 +393,9 @@ header {
       header .nav-expand .row.head {
         margin-top: 190px; }
         header .nav-expand .row.head .item h2.title-md {
-          color: #850000;
           margin-bottom: 30px; }
+          header .nav-expand .row.head .item h2.title-md a {
+            color: #850000; }
         header .nav-expand .row.head .item ul li {
           font-size: 1.5rem; }
           header .nav-expand .row.head .item ul li a {
@@ -545,6 +546,36 @@ TABLETS (Under 1024px)
 MOBILE DEVICES (Under 768px)
 =========================================
  */
+@media (max-width: 767px) {
+  header nav .nav-item.nav-brand {
+    width: 50%; }
+    header nav .nav-item.nav-brand img {
+      width: 150px;
+      content: url("../img/logo-w.png"); }
+  header nav .nav-item.nav-main {
+    width: 50%; }
+    header nav .nav-item.nav-main .left #expand-nav {
+      top: 20px;
+      left: 265%; }
+    header nav .nav-item.nav-main .right {
+      display: none; }
+  header .nav-expand {
+    left: 0; }
+    header .nav-expand .row.head {
+      margin-top: 150px;
+      flex-direction: column; }
+      header .nav-expand .row.head .item {
+        width: 100%;
+        margin-bottom: 60px; }
+    header .nav-expand.active {
+      width: 100vw;
+      padding-left: 15px;
+      padding-right: 15px; }
+  header.active nav {
+    padding-bottom: 15px; }
+    header.active nav .nav-item.nav-brand img {
+      width: 100%;
+      content: url("../img/logo.png"); } }
 /*
 ===========================
 ===========================
@@ -778,6 +809,17 @@ VERTICAL TABLETS (Under 992px)
 MOBILE DEVICES (Under 768px)
 =========================================
  */
+@media (max-width: 767px) {
+  #homepage .container-fluid .row .right #slider .carousel-inner .carousel-item .carousel-caption {
+    top: 30%;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column; }
+    #homepage .container-fluid .row .right #slider .carousel-inner .carousel-item .carousel-caption .item {
+      width: 100%; }
+      #homepage .container-fluid .row .right #slider .carousel-inner .carousel-item .carousel-caption .item.right .btn {
+        margin-top: 30px; } }
 /*
 ===========================
 ===========================
@@ -883,6 +925,20 @@ VERTICAL TABLETS (Under 992px)
 MOBILE DEVICES (Under 768px)
 =========================================
  */
+@media (max-width: 767px) {
+  #about-detail .cover .mask {
+    width: 100vw;
+    margin-left: 0; }
+    #about-detail .cover .mask .caption {
+      top: 25%;
+      padding-left: 15px;
+      padding-right: 15px;
+      display: flex;
+      flex-direction: column; }
+      #about-detail .cover .mask .caption .item {
+        width: 100%; }
+  #about-detail .container-fluid .container {
+    padding: 50px 30px; } }
 /*
 ===========================
 ===========================
@@ -1348,6 +1404,31 @@ Author: hung.luong@matocreative.vn
     #product-detail .content .section#shopnow .section-content > .row .right .detail.detail-price .buy .btn.btn-primary {
       width: 300px; }
 
+/*
+=========================================
+MOBILE DEVICES (Under 768px)
+=========================================
+ */
+@media (max-width: 767px) {
+  #product-detail .cover .mask {
+    width: 100vw;
+    margin-left: 0; }
+    #product-detail .cover .mask .caption {
+      top: 25%;
+      padding-left: 15px;
+      padding-right: 15px;
+      display: flex;
+      flex-direction: column; }
+      #product-detail .cover .mask .caption .item {
+        width: 100%; }
+  #product-detail .content .navigation {
+    display: none; }
+  #product-detail .content .section#overview .section-head {
+    padding-top: 50px;
+    padding-bottom: 50px; }
+  #product-detail .content .section#faq .section-content .accordion .card .card-header .btn {
+    white-space: normal;
+    text-align: left; } }
 /*
 ===========================
 ===========================
@@ -1850,5 +1931,16 @@ Author: hung.luong@matocreative.vn
   #checkout .container .row .right #bill .btn {
     width: 100%;
     margin-bottom: 15px; }
+
+/*
+=========================================
+MOBILE DEVICES (Under 768px)
+=========================================
+ */
+@media (max-width: 767px) {
+  #checkout .container .row .left #checklist .item .item-left {
+    flex-direction: column; }
+  #checkout .container .row .left #extra .item.item-protect .d-flex {
+    flex-direction: column; } }
 
 /*# sourceMappingURL=style.css.map */

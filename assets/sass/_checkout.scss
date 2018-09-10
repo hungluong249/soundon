@@ -128,3 +128,41 @@ Author: hung.luong@matocreative.vn
         }
     }
 }
+
+/*
+=========================================
+MOBILE DEVICES (Under 768px)
+=========================================
+ */
+
+@media (max-width: 767px){
+    #checkout{
+        .container{
+            .row{
+                .left{
+                    #checklist{
+                        .item{
+                            > .d-flex{
+
+                            }
+
+                            .item-left{
+                                flex-direction: column;
+                            }
+                        }
+                    }
+
+                    #extra{
+                        .item{
+                            &.item-protect{
+                                .d-flex{
+                                    flex-direction: column;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
