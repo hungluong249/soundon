@@ -271,9 +271,11 @@ header{
                 .item{
                     h2{
                         &.title-md{
-                            color: $primary;
-
                             margin-bottom: 30px;
+
+                            a{
+                                color: $primary;
+                            }
                         }
                     }
 
@@ -465,6 +467,74 @@ MOBILE DEVICES (Under 768px)
  */
 
 @media (max-width: 767px){
+    header{
+        nav{
+            .nav-item{
+                &.nav-brand{
+                    width: 50%;
 
+                    img{
+                        width: 150px;
+                        content: url("../img/logo-w.png");
+                    }
+                }
+
+                &.nav-main{
+                    width: 50%;
+
+                    .left{
+                        #expand-nav{
+                            top: 20px;
+                            left: 265%;
+                        }
+                    }
+
+                    .right{
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .nav-expand{
+            left: 0;
+
+            .row{
+                &.head{
+                    margin-top: 150px;
+
+                    flex-direction: column;
+
+                    .item{
+                        width: 100%;
+
+                        margin-bottom: 60px;
+                    }
+                }
+            }
+
+            &.active{
+                width: 100vw;
+
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+
+        &.active{
+            nav {
+                padding-bottom: 15px;
+
+                .nav-item {
+                    &.nav-brand {
+                        img {
+                            width: 100%;
+                            content: url("../img/logo.png");
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 

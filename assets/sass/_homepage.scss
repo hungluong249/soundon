@@ -176,6 +176,36 @@ MOBILE DEVICES (Under 768px)
 
 @media (max-width: 767px){
     #homepage{
+        .container-fluid{
+            .row{
+                .right{
+                    #slider{
+                        .carousel-inner{
+                            .carousel-item{
+                                .carousel-caption{
+                                    top: 30%;
 
+                                    padding-left: 15px;
+                                    padding-right: 15px;
+
+                                    display: flex;
+                                    flex-direction: column;
+
+                                    .item{
+                                        width: 100%;
+
+                                        &.right{
+                                            .btn{
+                                                margin-top: 30px;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -181,5 +181,32 @@ MOBILE DEVICES (Under 768px)
  */
 
 @media (max-width: 767px){
+    #about-detail{
+        .cover {
+            .mask {
+                width: 100vw;
+                margin-left: 0;
 
+                .caption {
+                    top: 25%;
+
+                    padding-left: 15px;
+                    padding-right: 15px;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    .item {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        .container-fluid{
+            .container{
+                padding: 50px 30px;
+            }
+        }
+    }
 }

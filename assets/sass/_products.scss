@@ -810,3 +810,64 @@ Author: hung.luong@matocreative.vn
         }
     }
 }
+
+/*
+=========================================
+MOBILE DEVICES (Under 768px)
+=========================================
+ */
+
+@media (max-width: 767px){
+    #product-detail{
+        .cover{
+            .mask{
+                width: 100vw;
+                margin-left: 0;
+
+                .caption{
+                    top: 25%;
+
+                    padding-left: 15px;
+                    padding-right: 15px;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    .item{
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        .content{
+            .navigation{
+                display: none;
+            }
+
+            .section{
+                &#overview{
+                    .section-head{
+                        padding-top: 50px;
+                        padding-bottom: 50px;
+                    }
+                }
+
+                &#faq{
+                    .section-content{
+                        .accordion{
+                            .card{
+                                .card-header{
+                                    .btn{
+                                        white-space: normal;
+                                        text-align: left;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

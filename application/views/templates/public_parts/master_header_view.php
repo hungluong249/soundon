@@ -88,9 +88,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="nav-expand">
 			<div class="row head">
 				<div class="col item">
-					<h2 class="title-md">Speakers</h2>
+					<h2 class="title-md">
+						<a href="<?php echo base_url('products/') ?>">
+							Speakers
+						</a>
+					</h2>
 
-					<ul>
+					<ul class="d-none d-md-block">
 						<li>
 							<a href="<?php echo base_url('products/') ?>">
 								Bookshelfs
@@ -135,9 +139,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 
 				<div class="col item">
-					<h2 class="title-md">Headphones</h2>
+					<h2 class="title-md">
+						<a href="<?php echo base_url('products/') ?>">
+							Headphones
+						</a>
+					</h2>
 
-					<ul>
+					<ul class="d-none d-md-block">
 						<li>
 							<a href="<?php echo base_url('products/') ?>">
 								In-ear
@@ -152,9 +160,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 
 				<div class="col item">
-					<h2 class="title-md">Accessories</h2>
+					<h2 class="title-md">
+						<a href="<?php echo base_url('products/') ?>">
+							Accessories
+						</a>
+					</h2>
 
-					<ul>
+					<ul class="d-none d-md-block">
 						<li>
 							<a href="<?php echo base_url('products/') ?>">
 								Speaker
@@ -179,9 +191,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 
 				<div class="col item">
-					<h2 class="title-md">About Us</h2>
+					<h2 class="title-md">
+						<a href="<?php echo base_url('about/') ?>">
+							About Us
+						</a>
+					</h2>
 
-					<ul>
+					<ul class="d-none d-md-block">
 						<li>
 							<a href="<?php echo base_url('about/') ?>">
 								About Us
