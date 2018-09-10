@@ -11,72 +11,52 @@ Author: hung.luong@matocreative.vn
  */
 
 #about{
-    width: 100%;
-    height: 100vh;
-
-    .background{
-        width: 100%;
-        height: 100%;
-
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        background-image: url("../img/texture-concrete.jpg");
-        background-blend-mode: multiply;
-        background-color: #fff;
-        filter: opacity(10%);
+    .cover{
+        .mask{
+            width: 100%;
+            height: 40vh;
+        }
     }
 
-    .container-fluid{
-        height: 100%;
-
-        padding-right: 0;
-        padding-left: 150px;
+    .container{
+        padding-top: 50px;
+        padding-bottom: 100px;
 
         .row{
-            height: 100%;
-
-            margin-left: 0;
-            margin-right: 0;
+            margin-top: 30px;
 
             .item{
-                padding-left: 0;
-                padding-right: 0;
+                margin-bottom: 30px;
 
-                .mask{
-                    width: 100%;
-                    height: 100%;
+                h2{
+                    margin-bottom: 15px;
 
-                    position: relative;
-
-                    .cover-title{
-                        position: absolute;
-                        bottom: 30px;
-                        left: 30px;
-
-                        h1{
-                            &.title-lg{
-                                color: #fff;
-
-                                text-shadow: 4px 4px 15px $gray-dark;
-                            }
-                        }
-                    }
-
-                    img{
-                        filter: grayscale(100%);
-
-                        @include transition(300ms);
+                    &.text-wrapper{
+                        height: 4.5rem;
+                        -webkit-line-clamp: 2;
                     }
                 }
 
-                &:hover{
-                    img{
-                        filter: grayscale(0%);
-
-                        @include transition(300ms);
+                p{
+                    &.text-wrapper{
+                        height: 6rem;
+                        -webkit-line-clamp: 4;
                     }
+                }
+
+                a{
+                    color: $gray-light;
+
+                    &:hover{
+                        color: $gray-dark;
+                    }
+                }
+
+                .mask{
+                    width: 100%;
+                    height: 230px;
+
+                    border-bottom: 5px solid $gray-light;
                 }
             }
         }
@@ -88,150 +68,85 @@ Author: hung.luong@matocreative.vn
         width: 100%;
         height: 100vh;
 
-        padding-bottom: 40px;
-
-        position: relative;
-
         .mask{
-            width: 100%;
-            height: 100%;
-        }
+            width: 75%;
+            height: 95vh;
 
-        .cover-title{
-            width: 50%;
-            padding: 70px;
+            margin-left: 25%;
 
-            background-color: #fff;
+            position: relative;
 
-            position: absolute;
-            bottom: 40px;
-            right: 0;
-
-            h3{
-                &.subtitle-md{
-                    margin-bottom: 50px;
-                }
-            }
-
-            h2{
-                &.title-md{
-                    margin-bottom: 30px;
-                }
-            }
-
-            p{
-                &.paragraph{
-                    color: $gray-light;
-                }
-            }
-        }
-    }
-
-    #description{
-        padding-top: 100px;
-        padding-bottom: 100px;
-    }
-
-    .break-image{
-        width: 100%;
-        height: 500px;
-
-        .mask{
-            width: 100%;
-            height: 100%;
-        }
-    }
-
-    .content{
-        padding-top: 100px;
-        padding-bottom: 100px;
-
-        article{
-
-            h2{
-                &.heading-post{
-                    width: 25%;
-                    float: left;
-
-                    margin-left: 8.33%;
-                    padding: 0 15px;
-                }
-            }
-
-            p{
-                &.paragraph{
-                    width: 58.33%;
-                    float: right;
-
-                    margin-right: 8.33%;
-                    padding: 0 15px;
-                }
-            }
-
-            img{
+            .overlay{
                 width: 100%;
+                height: 100%;
 
-                margin: 30px 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 3;
+
+                @include gradient-primary;
+                filter: opacity(95%);
+            }
+
+            h1{
+                position: absolute;
+                bottom: 30px;
+                left: 40px;
+                z-index: 4;
+
+                color: #fff;
             }
         }
     }
 
-    .recommend{
-        clear: both;
-
-        padding-left: 0;
-        padding-right: 0;
-        padding-top: 50px;
-        padding-bottom: 50px;
-
-        background-color: $gray-lighter;
+    .container-fluid{
+        &#description{
+            background-color: #f7f7f7;
+        }
 
         .container{
-            padding-top: 50px;
-            padding-bottom: 50px;
+            padding: 150px 100px;
+        }
+    }
 
+    .container{
+        .content{
             .row{
-                margin-top: 30px;
+                padding-top: 30px;
+                padding-bottom: 50px;
 
-                .item{
-                    margin-bottom: 30px;
+                .left{
+                    ul{
+                        li{
+                            padding-top: 15px;
 
-                    h3{
-                        &.subtitle-md{
+                            a{
+                                color: $gray-light;
 
+                                &:hover{
+                                    color: $gray-dark;
+                                }
+                            }
+
+                            &:first-of-type{
+                                padding-top: 0;
+                                padding-bottom: 15px;
+                                border-bottom: 1px solid $gray-lighter;
+                            }
                         }
                     }
+                }
 
-                    h2{
-                        &.title-md{
-                            margin-bottom: 15px;
+                .right{
+                    article{
 
-                            color: $gray-dark;
+                        img{
+                            width: 100%;
+
+                            margin-top: 15px;
+                            margin-bottom: 30px;
                         }
-                    }
-
-                    p{
-                        &.paragraph{
-                            color: $gray-light;
-
-                            height: fit-content;
-                            -webkit-line-clamp: 3;
-                        }
-                    }
-
-                    a{
-                        color: $gray-light;
-
-                        &:hover{
-                            color: $gray-dark;
-                        }
-                    }
-
-                    .mask{
-                        width: 100%;
-                        height: 150px;
-
-                        margin-top: 15px;
                     }
                 }
             }
@@ -246,14 +161,7 @@ TABLETS (Under 1024px)
  */
 
 @media (max-width: 1024px) and (min-width: 993px){
-    #about-detail{
-        .recommend{
-            .container{
-                padding-left: 100px;
-                padding-right: 100px;
-            }
-        }
-    }
+
 }
 
 /*
@@ -263,26 +171,7 @@ VERTICAL TABLETS (Under 992px)
  */
 
 @media (max-width: 992px) and (min-width: 768px){
-    #about{
-        .container-fluid{
-            .row{
-                flex-direction: column;
 
-                .item{
-                    height: 33.33%;
-                }
-            }
-        }
-    }
-
-    #about-detail{
-        .recommend{
-            .container{
-                padding-left: 75px;
-                padding-right: 75px;
-            }
-        }
-    }
 }
 
 /*
@@ -292,62 +181,5 @@ MOBILE DEVICES (Under 768px)
  */
 
 @media (max-width: 767px){
-    #about{
-        .container-fluid{
-            padding-left: 0;
-            padding-top: 100px;
 
-            .row{
-                flex-direction: column;
-
-                .item{
-                    height: 33.33%;
-                }
-            }
-        }
-    }
-
-    #about-detail{
-        .cover{
-            .cover-title{
-                width: 100%;
-
-                padding: 30px;
-            }
-        }
-
-        #description{
-            padding-top: 50px;
-            padding-bottom: 50px;
-        }
-
-        .content{
-            padding-top: 50px;
-            padding-bottom: 50px;
-
-            article{
-                h2{
-                    &.heading-post{
-                        width: 100%;
-
-                        float: none;
-
-                        margin-left: 0;
-                        padding: 0 30px;
-                    }
-                }
-
-                p{
-                    &.paragraph{
-                        width: 100%;
-
-                        float: none;
-
-                        margin-left: 0;
-                        padding: 0 30px;
-                    }
-                }
-            }
-        }
-    }
 }

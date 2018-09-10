@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- TITLE -->
-	<title>Teddy's Grill House</title>
+	<title>SOUND ON</title>
 
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -29,185 +29,200 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <header class="">
 	<nav>
-		<div class="background"></div>
-		<div class="nav-brand">
+		<div class="nav-brand nav-item">
 			<a href="<?php echo base_url('') ?>">
-				<img src="<?php echo site_url('assets/img/')?>logo-03.png" alt="Teddy's Logo">
-			</a>
-		</div>
-		<div id="expand-nav">
-			<a class="btn-nav-expand" role="button" id="btn-nav-expand">
-				<span class="nav-icon"></span>
+				<img src="<?php echo site_url('assets/img/') ?>logo.png" alt="logo Sound ON">
 			</a>
 		</div>
 
-		<div class="nav-main">
-			<div class="row head">
-				<div class="col item">
-					<a href="<?php echo base_url('about/') ?>">
-						<h3 class="subtitle-md">About Us</h3>
+		<div class="nav-main nav-item">
+			<div class="left">
+				<div id="expand-nav">
+					<a class="btn-nav-expand" role="button" id="btn-nav-expand">
+						<span class="nav-icon"></span>
 					</a>
-					<ul class="d-none d-sm-block">
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">The story of us</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Our Food</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Our Place</h2>
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col item">
-					<a href="<?php echo base_url('menu/') ?>">
-						<h3 class="subtitle-md">Menu</h3>
-					</a>
-					<ul class="d-none d-sm-block">
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Chef's Choice</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Steak</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Hamburger</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Craft Beer</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Other</h2>
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col item">
-					<a href="<?php echo base_url('blogs/') ?>">
-						<h3 class="subtitle-md">Blogs</h3>
-					</a>
-					<ul class="d-none d-sm-block">
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">News</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('') ?>">
-								<h2 class="title-md">Recruitment</h2>
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col item">
-					<a href="<?php echo base_url('contact/') ?>">
-						<h3 class="subtitle-md">Contact Us</h3>
-					</a>
-					<ul class="d-none d-sm-block">
-						<li>
-							<a href="<?php echo base_url('contact/') ?>">
-								<h2 class="title-md">Contact</h2>
-							</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url('reservations/') ?>">
-								<h2 class="title-md">Reservations</h2>
-							</a>
-						</li>
-					</ul>
 				</div>
 			</div>
 
-			<div class="row body">
+			<div class="right">
+				<ul>
+					<li>
+						<a href="<?php echo base_url('products')?>">
+							Store
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('')?>">
+							Second Hand
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('')?>">
+							Advise Corner
+						</a>
+					</li>
+
+					<li>
+						<div class="divide"></div>
+					</li>
+
+					<li>
+						<a href="<?php echo base_url('')?>">
+							<i class="fas fa-shopping-cart"></i> 0
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('')?>">
+							Log in
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('')?>">
+							Sign up
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="nav-expand">
+			<div class="row head">
 				<div class="col item">
-					<p class="paragraph">Location</p>
-					<p class="paragraph">
-						917 Rosenbaum Lodge Apt. 831
-					</p>
+					<h2 class="title-md">Speakers</h2>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Bookshelfs
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Speakers with Ampli
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								TV Speakers
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Surround
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Floor Standing
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								2.1 Speakers
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								5.1 Speakers
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Karaoke Speakers
+							</a>
+						</li>
+					</ul>
 				</div>
 
 				<div class="col item">
-					<p class="paragraph">Reservations</p>
-					<table class="table">
-						<tr>
-							<td>Phone</td>
-							<td><a href="tel:(84)12345678">(84) 1234 5678</a></td>
-						</tr>
-						<tr>
-							<td>Email</td>
-							<td><a href="mailto:info@teddygrillhouse.vn">info@teddygrillhouse.vn</a></td>
-						</tr>
-					</table>
+					<h2 class="title-md">Headphones</h2>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								In-ear
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Over-ear
+							</a>
+						</li>
+					</ul>
 				</div>
 
 				<div class="col item">
-					<p class="paragraph">Subscribe</p>
-					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-					<button type="button" class="btn btn-link">Subscribe</button>
+					<h2 class="title-md">Accessories</h2>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Speaker
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Headphone
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Cable
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('products/') ?>">
+								Ampli
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col item">
+					<h2 class="title-md">About Us</h2>
+
+					<ul>
+						<li>
+							<a href="<?php echo base_url('about/') ?>">
+								About Us
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('contact/') ?>">
+								Contact Us
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo base_url('support/') ?>">
+								Support
+							</a>
+						</li>
+						<li>
+							<a href="<?php ?>">
+								Help
+							</a>
+						</li>
+						<li>
+							<a href="<?php ?>">
+								Terms & Conditions
+							</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 
 			<div class="row foot">
-				<div class="left col-sm-9 item">
-					<ul>
-						<li>
-							<a class="active" href="<?php echo base_url('')?>">En</a>
-						</li>
-						<li> / </li>
-						<li>
-							<a href="<?php echo base_url('')?>">Vi</a>
-						</li>
-					</ul>
+				<div class="col">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon1">
+								<i class="fas fa-search"></i>
+							</span>
+						</div>
+						<input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+						<button class="btn btn-link" type="button" id="button-addon2">Search</button>
+					</div>
 				</div>
-
-				<div class="right col-sm-3 item">
-					<ul>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-facebook-square"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-twitter-square"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-instagram"></i>
-							</a>
-						</li>
-						<li>
-							<a href="" target="_blank">
-								<i class="fab fa-youtube-square"></i>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<div class="right item">
-			<div class="content">
-
 			</div>
 		</div>
 	</nav>

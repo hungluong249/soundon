@@ -11,7 +11,25 @@ Author: hung.luong@matocreative.vn
  */
 
 @mixin gradient-primary{
+    background: rgba(133,0,0,1);
+    background: -moz-linear-gradient(-45deg, rgba(133,0,0,1) 0%, rgba(251,177,59,1) 100%);
+    background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(133,0,0,1)), color-stop(100%, rgba(251,177,59,1)));
+    background: -webkit-linear-gradient(-45deg, rgba(133,0,0,1) 0%, rgba(251,177,59,1) 100%);
+    background: -o-linear-gradient(-45deg, rgba(133,0,0,1) 0%, rgba(251,177,59,1) 100%);
+    background: -ms-linear-gradient(-45deg, rgba(133,0,0,1) 0%, rgba(251,177,59,1) 100%);
+    background: linear-gradient(135deg, rgba(133,0,0,1) 0%, rgba(251,177,59,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#850000', endColorstr='#fbb13b', GradientType=1 );
+}
 
+@mixin gradient-dark{
+    background: rgba(90,84,84,1);
+    background: -moz-linear-gradient(-90deg, rgba(90,84,84,1) 0%, rgba(51,51,51,1) 100%);
+    background: -webkit-gradient(top, bottom, color-stop(0%, rgba(90,84,84,1)), color-stop(100%, rgba(51,51,51,1)));
+    background: -webkit-linear-gradient(-90deg, rgba(90,84,84,1) 0%, rgba(51,51,51,1) 100%);
+    background: -o-linear-gradient(-90deg, rgba(90,84,84,1) 0%, rgba(51,51,51,1) 100%);
+    background: -ms-linear-gradient(-90deg, rgba(90,84,84,1) 0%, rgba(51,51,51,1) 100%);
+    background: linear-gradient(90deg, rgba(90,84,84,1) 0%, rgba(51,51,51,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5a5454', endColorstr='#333', GradientType=1 );
 }
 
 @mixin makeItCenter{
@@ -28,4 +46,30 @@ Author: hung.luong@matocreative.vn
     -ms-transition: all ease-in-out $duration;
     -o-transition: all ease-in-out $duration;
     transition: all ease-in-out $duration;
+}
+
+@mixin transition-delay($duration, $delay){
+    -webkit-transition-property: all;
+    -moz-transition-property: all;
+    -ms-transition-property: all;
+    -o-transition-property: all;
+    transition-property: all;
+
+    -webkit-transition-duration: $duration;
+    -moz-transition-duration: $duration;
+    -ms-transition-duration: $duration;
+    -o-transition-duration: $duration;
+    transition-duration: $duration;
+
+    -webkit-transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -ms-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+
+    -webkit-transition-delay: $delay;
+    -moz-transition-delay: $delay;
+    -ms-transition-delay: $delay;
+    -o-transition-delay: $delay;
+    transition-delay: $delay;
 }
