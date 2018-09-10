@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					</li>
 
 					<li>
-						<a href="<?php echo base_url('')?>">
+						<a href="<?php echo base_url('/checkout')?>">
 							<i class="fas fa-shopping-cart"></i> <span id="total-cart">0</span>
 						</a>
 					</li>
