@@ -59,6 +59,7 @@ class Post_model extends MY_Model{
             $this->db->where($this->table_lang .'.language', $lang);
         }
         $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
         $this->db->where($this->table .'.slug', $slug);
 
         return $this->db->get()->row_array();
@@ -93,5 +94,21 @@ class Post_model extends MY_Model{
         $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
 
         return $result = $this->db->get()->row_array();
+    }
+    public function get_all_with_pagination_post($order = 'desc',$lang = '', $limit = NULL, $start = NULL, $category = '') {
+        $this->db->select($this->table .'.*, '. $this->table_lang .'.*');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->where_in($this->table .'.post_category_id', $category);
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->limit($limit, $start);
+        $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
+        $this->db->order_by($this->table .".id", $order);
+
+        return $result = $this->db->get()->result_array();
     }
 }

@@ -37,9 +37,9 @@
                         </h3>
                     </div>
 
-                    <div class="row">
+                    <div class="row" style="padding: 10px;">
                         <div class="col-md-6">
-                            <a href="<?php echo base_url('admin/'.$controller.'/create') ?>" class="btn btn-primary" role="button">Thêm mới</a>
+                            <span type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary"  >Thêm mới</span>
                         </div>
                         <div class="col-md-6">
                             <form action="<?php echo base_url('admin/'.$controller.'/index') ?>" method="get">
@@ -79,7 +79,7 @@
                                         <td><?php echo $i++ ?></td>
                                         <td>
                                             <div class="mask_sm">
-                                                <img src="<?php echo base_url('assets/upload/'.$controller.'/'. $value['image']) ?>" alt="anh-cua-<?php echo $value['slug'] ?>" width=150px>
+                                                <img src="<?php echo base_url('assets/upload/'.$controller.'/' .$value['slug']. '/'. $value['image']) ?>" alt="anh-cua-<?php echo $value['slug'] ?>" width=150px>
                                             </div>
                                         </td>
                                         <td><?php echo $value['title'] ?></td>
@@ -93,7 +93,7 @@
                                         </td>
                                         <td>
                                             <?php if ($value['is_activated'] == 0): ?>
-                                                <a href="javascript:void(0);" onclick="deactive('<?php echo $controller; ?>', <?php echo $value['id'] ?>, 'Chăc chắn tắt nếu tắt menu trỏ trực tiếp đến bài viết cũng sẽ bị tắt.')" class="dataActionDelete" title="Tắt danh mục"><i class="fa fa-low-vision" aria-hidden="true"></i> </a>
+                                                <a href="javascript:void(0);" onclick="deactive('<?php echo $controller; ?>', <?php echo $value['id'] ?>, 'Chăc chắn tắt.')" class="dataActionDelete" title="Tắt danh mục"><i class="fa fa-low-vision" aria-hidden="true"></i> </a>
                                             <?php else: ?>
                                                 <a href="javascript:void(0);" onclick="active('<?php echo $controller; ?>', <?php echo $value['id'] ?>, 'Chăc chắn bật')" class="dataActionDelete" title="Bật danh mục"><i class="fa fa-eye" aria-hidden="true"></i> </a>
                                             <?php endif ?>
@@ -132,6 +132,37 @@
                 <!-- /.box -->
             </div>
         </div>
+
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Chọn cấu hình</h4>
+                    </div>
+                    <div class="modal-body" id="modal-form">
+                        <select name="" id="select_templates" class="form-control" required="required" onclick="submit_shared(this.value)">
+                            <?php foreach ($templates as $key => $value): ?>
+                                <option value="<?php echo $value['id']; ?>"><?php echo $value['title']; ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-default" id="submit_shared">Xác nhận</a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <!-- /.content -->
 </div>
+<script src="<?php echo site_url('assets/js/admin/') ?>common.js"></script>
+<script type="text/javascript">
+    document.querySelector('.modal-footer a').setAttribute('href',HOSTNAMEADMIN+'/post/create/'+document.getElementById('select_templates').value);
+    function submit_shared(val){
+        document.querySelector('.modal-footer a').setAttribute('href',HOSTNAMEADMIN+'/post/create/'+val);
+    }
+</script>

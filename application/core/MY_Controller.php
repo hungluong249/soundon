@@ -1,7 +1,5 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
-
 class MY_Controller extends CI_Controller {
 
     protected $data = array();
@@ -11,7 +9,7 @@ class MY_Controller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-
+        
         $this->data['page_title'] = 'Template';
         $this->data['before_head'] = '';
         $this->data['before_body'] = '';
@@ -23,63 +21,49 @@ class MY_Controller extends CI_Controller {
             echo json_encode($this->data);
         } else {
             $this->data['the_view_content'] = (is_null($the_view)) ? '' : $this->load->view($the_view, $this->data, TRUE);
+            $this->data['lang'] = $this->langAbbreviation;
             $this->load->view('templates/' . $template . '_view', $this->data);
         }
     }
 
     protected function pagination_config($base_url, $total_rows, $per_page, $uri_segment) {
         $config['base_url'] = $base_url;
+        $config['total_rows'] = $total_rows;
         $config['per_page'] = $per_page;
         $config['uri_segment'] = $uri_segment;
+
+        $choice = $config['total_rows'] / $config['per_page'];
+        $config['num_links'] = floor($choice);
+
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = true;
+        $config['last_link'] = true;
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
         $config['prev_link'] = 'Prev';
+        $config['prev_tag_open'] = '<li class="prev">';
+        $config['prev_tag_close'] = '</li>';
         $config['next_link'] = 'Next';
-        $config['total_rows'] = $total_rows;
-        $config['reuse_query_string'] = true;
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="active"><a href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+
         return $config;
     }
 
-}
-
-class Admin_Controller extends MY_Controller {
-
-    function __construct() {
-        parent::__construct();
-
-        $this->data['page_languages'] = array('vi' => 'Tiếng Việt', 'en' => 'English');
-
-        $this->load->library('ion_auth');
-        if (!$this->ion_auth->logged_in()) {
-            //redirect them to the login page
-            redirect('admin/user/login', 'refresh');
-        }
-        $this->data['user_email'] = $this->ion_auth->user()->row()->username;
-        $this->data['username'] = $this->ion_auth->user()->row()->first_name.' '.$this->ion_auth->user()->row()->last_name;
-        $this->data['page_title'] = 'Administrator area';
-
-        // Set timezone
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
-
-        // Insert author informations to database when insert, update or delete
-        $this->author_info = array(
-            'created_at' => date('Y-m-d H:i:s', now()),
-            'created_by' => $this->ion_auth->user()->row()->username,
-            'updated_at' => date('Y-m-d H:i:s', now()),
-            'updated_by' => $this->ion_auth->user()->row()->username
-        );
-    }
-
-    protected function render($the_view = NULL, $template = 'admin_master') {
-        parent::render($the_view, $template);
-    }
-
-    protected function upload_image($image_input_id, $image_name, $upload_path, $upload_thumb_path = '', $thumbs_with = 500, $thumbs_height = 500) {
+    protected function upload_image($image_input_id, $image_name, $upload_path, $upload_thumb_path, $thumbs_with = 500, $thumbs_height = 375) {
         $image = '';
         if (!empty($image_name)) {
             $config['upload_path'] = $upload_path;
-            $config['allowed_types'] = 'jpg|jpeg|png|gif';
+            $config['allowed_types'] = 'jpg|jpeg|png';
             $config['file_name'] = $image_name;
-            $config['max_size'] = '1200';
-            $config['encrypt_name'] = TRUE;
+            // $config['encrypt_name'] = TRUE;
 
             $this->load->library('upload', $config);
             $this->upload->initialize($config);
@@ -100,8 +84,63 @@ class Admin_Controller extends MY_Controller {
                 $this->image_lib->resize();
             }
         }
+
         return $image;
     }
+
+    protected function delete_multiple_common($table, $model, $ids){
+        $this->load->model($model);
+
+        $data = array();
+        foreach($ids as $key => $id){
+            $data[$key] = array(
+                'id' => $id,
+                'is_deleted' => 1
+            );
+        }
+
+        $result = $this->$model->remove_multiple($table, $data);
+
+        if($result == false){
+            $this->output->set_status_header(404)
+                ->set_output(json_encode(array('message' => 'Fail', 'data' => $ids)));
+        }else{
+            $this->output->set_status_header(200)
+                ->set_output(json_encode(array('message' => 'Success', 'data' => $ids)));
+        }
+    }
+    function return_api($status, $message='', $data = null,$isExisted= true){
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($status)
+            ->set_output(json_encode(array('status' => $status,'message' => $message , 'reponse' => $data, 'isExisted' => $isExisted)));
+    }
+
+}
+
+class Admin_Controller extends MY_Controller {
+    function __construct() {
+        parent::__construct();
+        $this->data['page_languages'] = array('vi' => 'Tiếng Việt', 'en' => 'English'/*, 'cn' => 'China' */);
+        $this->load->library('ion_auth');
+        if (!$this->ion_auth->logged_in()) {
+            //redirect them to the login page
+            redirect('admin/user/login', 'refresh');
+        }
+        $this->data['page_title'] = 'Administrator area';
+
+        // Set timezone
+        date_default_timezone_set('Europe/Budapest');
+
+        // Insert author informations to database when insert, update or delete
+        $this->author_info = array(
+            'created' => date('Y-m-d H:i:s', now()),
+            'created_by' => $this->ion_auth->user()->row()->username,
+            'modified' => date('Y-m-d H:i:s', now()),
+            'modified_by' => $this->ion_auth->user()->row()->username
+        );
+    }
+
 
     protected function upload_file($upload_path = '', $file_name = '', $upload_thumb_path = '', $thumbs_with = 500, $thumbs_height = 500) {
         $config = $this->config_file($upload_path);
@@ -134,6 +173,7 @@ class Admin_Controller extends MY_Controller {
                 $this->image_lib->clear();
                 $this->image_lib->resize($image);
             }
+            unset($_FILES['userfile']);
         }
         return $image_list;
     }
@@ -143,51 +183,65 @@ class Admin_Controller extends MY_Controller {
         $config['upload_path'] = $upload_path;
         $config['allowed_types'] = 'jpg|jpeg|png|gif';
         $config['max_size'] = '1200';
-        $config['encrypt_name'] = TRUE;
+        // $config['encrypt_name'] = TRUE;
 //        $config['max_width']     = '1028';
 //        $config['max_height']    = '1028';
 
         return $config;
     }
-
-    function return_api($status, $message='', $data = null,$isExisted= true){
-        return $this->output
-            ->set_content_type('application/json')
-            ->set_status_header($status)
-            ->set_output(json_encode(array('status' => $status,'message' => $message , 'reponse' => $data, 'isExisted' => $isExisted)));
+    
+    public function get_posts_with_category($categories, $parent_id = 0, &$ids){
+        foreach ($categories as $key => $item){
+            $ids[] = $parent_id;
+            if ($item['parent_id'] == $parent_id){
+                $ids[] = $item['id'];
+                $this->get_posts_with_category($categories, $item['id'], $ids);
+            }
+        }
     }
+    public function get_id_children_and_id($id){
+        $category_post = $this->menu_model->get_by_parent_id(null, 'asc');
+        $this->get_posts_with_category($category_post, $id, $ids);
+        $new_ids = array_unique($ids);
+        return $new_ids;
+    }
+    
+    protected function render($the_view = NULL, $template = 'admin_master') {
+        parent::render($the_view, $template);
+    }
+
 }
 
 class Public_Controller extends MY_Controller {
+
     public function __construct() {
         parent::__construct();
-        $this->load->helper('form');
         $this->load->library('session');
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $this->load->helper('form');
+        $this->langAbbreviation = $this->session->userdata('langAbbreviation') ? $this->session->userdata('langAbbreviation') : 'vi';
 
-        $this->langAbbreviation = $this->uri->segment(1) ? $this->uri->segment(1) : 'vi';
         if($this->langAbbreviation == 'vi' || $this->langAbbreviation == 'en' || $this->langAbbreviation == ''){
             $this->session->set_userdata('langAbbreviation', $this->langAbbreviation);
         }
-
-        if($this->session->userdata('langAbbreviation') == 'vi'){
+        
+        if($this->session->userdata('langAbbreviation') == 'vi' || $this->session->userdata('langAbbreviation') == ''){
             $langName = 'vietnamese';
-            $this->config->set_item('vietnamese', $langName);
+            $this->config->set_item('language', $langName); 
             $this->session->set_userdata("langAbbreviation",'vi');
             $this->lang->load('vietnamese_lang', 'vietnamese');
         }
-
-        if($this->session->userdata('langAbbreviation') == 'en' || $this->session->userdata('langAbbreviation') == ''){
+        
+        if($this->session->userdata('langAbbreviation') == 'en'){
             $langName = 'english';
-            $this->config->set_item('language', $langName);
+            $this->config->set_item('language', $langName); 
             $this->session->set_userdata("langAbbreviation",'en');
             $this->lang->load('english_lang', 'english');
         }
-
-
+        
     }
 
     protected function render($the_view = NULL, $template = 'master') {
         parent::render($the_view, $template);
     }
+
 }

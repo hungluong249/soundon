@@ -9,7 +9,6 @@ class Post_category extends Admin_Controller{
     );
     private $author_data = array();
     private $controller = '';
-
 	function __construct(){
 		parent::__construct();
 		$this->load->model('post_category_model');
@@ -22,7 +21,6 @@ class Post_category extends Admin_Controller{
         $this->data['controller'] = $this->controller;
 		$this->author_data = handle_author_common_data();
 	}
-
     public function index(){
         $keywords = '';
         if($this->input->get('search')){
@@ -32,8 +30,6 @@ class Post_category extends Admin_Controller{
         if($keywords != ''){
             $total_rows  = $this->post_category_model->count_search('vi', $keywords);
         }
-
-        
         $this->load->library('pagination');
         $config = array();
         $base_url = base_url('admin/'. $this->controller .'/index');
@@ -59,7 +55,6 @@ class Post_category extends Admin_Controller{
         
         $this->render('admin/'. $this->controller .'/list_post_category_view');
     }
-
 	public function create(){
 		$this->load->helper('form');
         $this->load->library('form_validation');
@@ -125,17 +120,11 @@ class Post_category extends Admin_Controller{
     public function detail($id){
         $this->load->helper('form');
         $this->load->library('form_validation');
-
         $detail = $this->post_category_model->get_by_id($id, array('title','metakeywords','metadescription'));
-
         $detail = build_language($this->controller, $detail, array('title','metakeywords','metadescription'), $this->page_languages);
         $parent_title = $this->build_parent_title($detail['parent_id']);
         $detail['parent_title'] = $parent_title;
-
         $this->data['detail'] = $detail;
-        
-        // print_r($detail);die;
-
         $this->render('admin/'. $this->controller .'/detail_post_category_view');
     }
 
@@ -209,36 +198,38 @@ class Post_category extends Admin_Controller{
         }
     }
 
-    public function remove(){
+    function remove(){
+        $id = $this->input->post('id');
         $this->load->model("menu_model");
         $this->load->model('post_model');
-        $id = $this->input->post('id');
-        $post_category = $this->post_category_model->find($id);
-        $menu_model = $this->menu_model->get_where_array(array('slug' => $post_category['slug']));
-        if(count($menu_model) > 0){
-            return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_POST_CATEGORY, count($menu_model)));
-        }
-        $list_categories = $this->post_category_model->get_by_parent_id(null, 'asc');
-        $detail_catrgory = $this->post_category_model->get_by_id($id, $this->request_language_template);
-        $this->get_multiple_posts_with_category($list_categories, $detail_catrgory['id'], $ids);
-        $ids = array_unique($ids);
-        $posts = array();
-        $reponse = array(
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        if(isset($ids)){
-            $posts = $this->post_model->get_by_multiple_ids(array_unique($ids), 'vi');
-        }
-        if($posts == null && (count($ids) <= 1)){
-            $data = array('is_deleted' => 1);
-            $update = $this->post_category_model->common_update($id, $data);
-            if($update == 1){
-                return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_SUCCESS,$reponse);
+        if($id &&  is_numeric($id) && ($id > 0)){
+            $detail = $this->post_category_model->find($id);
+            if(empty($detail)){
+                return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ISSET_ERROR);
             }
-        }else{
-            return $this->return_api(HTTP_SUCCESS,'',$reponse,false);
+            $menu_model = $this->menu_model->get_where_array(array('slug' => 'danh-muc/'.$detail['slug']));
+            if(count($menu_model) > 0){
+                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_CATEGORY, count($menu_model)));
+            }
+            $where = array('post_category_id' => $id,'is_deleted' => 0);
+            $post = $this->post_model->find_rows($where);// lấy số bài viết thuộc về category
+            $where = array('parent_id' => $id);
+            $parent_id = $this->post_category_model->find_rows($where);//lấy số con của category
+            if($post == 0 && $parent_id == 0){
+                $data = array('is_deleted' => 1);
+                $update = $this->post_category_model->common_update($id, $data);
+                if($update){
+                    $reponse = array(
+                        'csrf_hash' => $this->security->get_csrf_hash()
+                    );
+                    return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_SUCCESS,$reponse);
+                }
+                return $this->return_api(HTTP_NOT_FOUND,MESSAGE_REMOVE_ERROR);
+            }else{
+                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_FOREIGN_KEY_LINK_ERROR,$post,$parent_id));
+            }
         }
-        return $this->return_api(HTTP_BAD_REQUEST);
+        return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ID_ERROR);
     }
 
     public function active(){
@@ -266,43 +257,44 @@ class Post_category extends Admin_Controller{
         $this->load->model('post_model');
         $id = $this->input->post('id');
         $list_categories = $this->post_category_model->get_by_parent_id(null, 'asc');
-        // $detail_catrgory = $this->post_category_model->get_by_id($id, $this->request_language_template);
         $this->get_multiple_posts_with_category($list_categories, $id, $ids);
         $ids = array_unique($ids);
-
         $data = array('is_activated' => 1);
-
+        $this->load->model("menu_model");
+        $post_category = $this->post_category_model->find($id);
+        $menu_model = $this->menu_model->get_row_where_array(array('slug' => 'danh-muc/'.$post_category['slug']));
+        if(count($menu_model) > 0){
+            $reponse = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'id' => $menu_model['id']
+            );
+            return $this->return_api(HTTP_SUCCESS,MESSAGE_TURN_OFF_CATEGORY_MENU,$reponse);
+        }
         $this->db->trans_begin();
-
         $update = $this->post_category_model->multiple_update_by_ids($ids, $data);
-
         if ($update == 1) {
             $this->post_model->multiple_update_by_category_ids($ids, $data);
         }
-
         if ($this->db->trans_status() === false) {
             $this->db->trans_rollback();
             return $this->return_api(HTTP_BAD_REQUEST);
         } else {
             $this->db->trans_commit();
-            $this->load->model("menu_model");
-            $post_category = $this->post_category_model->find($id);
-            $menu_model = $this->menu_model->get_where_array(array('slug' => $post_category['slug']));
-            if(count($menu_model) > 0){
-                $data = array('is_activated' => 1);
-                foreach ($menu_model as $key => $value) {
-                    foreach ($this->get_id_children_and_id($value['id']) as $k => $val) {
-                        $this->menu_model->common_update($val, array_merge($data,$this->author_data));
-                    }
-                }
-/*                foreach ($menu_model as $key => $value) {
-                    $this->menu_model->common_update($value['id'],array_merge(array('is_activated' => 1),$this->author_data));
-                }*/
-            }
+            // $this->load->model("menu_model");
+            // $post_category = $this->post_category_model->find($id);
+            // $menu_model = $this->menu_model->get_where_array(array('slug' => 'danh-muc/'.$post_category['slug']));
+            // if(count($menu_model) > 0){
+            //     $data = array('is_activated' => 1);
+            //     foreach ($menu_model as $key => $value) {
+            //         foreach ($this->get_id_children_and_id($value['id']) as $k => $val) {
+            //             $this->menu_model->common_update($val, array_merge($data,$this->author_data));
+            //         }
+            //     }
+            // }
             $reponse = array(
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
-            return $this->return_api(HTTP_SUCCESS,'',$reponse);
+            return $this->return_api(HTTP_SUCCESS,MESSAGE_SUCCESS_TURN_OFF_ALL,$reponse);
         }
     }
 
@@ -341,8 +333,6 @@ class Post_category extends Admin_Controller{
     public function sort(){
         $params = array();
         parse_str($this->input->get('sort'), $params);
-        // echo '<pre>';
-        // print_r($params);die;
         $i = 1;
         foreach($params as $value){
             $this->post_category_model->update_sort($i, $value[0]);
@@ -366,20 +356,5 @@ class Post_category extends Admin_Controller{
                 $this->get_multiple_posts_with_category($categories, $item['id'], $ids);
             }
         }
-    }
-    public function get_posts_with_category($categories, $parent_id = 0, &$ids){
-        foreach ($categories as $key => $item){
-            $ids[] = $parent_id;
-            if ($item['parent_id'] == $parent_id){
-                $ids[] = $item['id'];
-                $this->get_posts_with_category($categories, $item['id'], $ids);
-            }
-        }
-    }
-    public function get_id_children_and_id($id){
-        $category_post = $this->menu_model->get_by_parent_id(null, 'asc');
-        $this->get_posts_with_category($category_post, $id, $ids);
-        $new_ids = array_unique($ids);
-        return $new_ids;
     }
 }

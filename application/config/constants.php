@@ -30,7 +30,15 @@ defined('FILE_READ_MODE')  OR define('FILE_READ_MODE', 0644);
 defined('FILE_WRITE_MODE') OR define('FILE_WRITE_MODE', 0666);
 defined('DIR_READ_MODE')   OR define('DIR_READ_MODE', 0755);
 defined('DIR_WRITE_MODE')  OR define('DIR_WRITE_MODE', 0755);
+/**
+ * Message Photos are too large code
+ */
+defined('MESSAGE_PHOTOS_ERROR') OR define('MESSAGE_PHOTOS_ERROR', 'Hình ảnh vượt quá %u Kb hoặc định dạng file không đúng. Vui lòng kiểm tra lại và thực hiện lại thao tác!');
 
+/**
+ * Message Pfile extension
+ */
+defined('MESSAGE_FILE_EXTENSION_ERROR') OR define('MESSAGE_FILE_EXTENSION_ERROR', 'Đuôi file image phải là jpg | jpeg | png | gif!');
 /*
 |--------------------------------------------------------------------------
 | File Stream Modes
@@ -84,7 +92,6 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-
 /**
  * HTTP Success code
  */
@@ -97,9 +104,6 @@ defined('HTTP_SUCCESS') OR define('HTTP_SUCCESS', 200);
 defined('HTTP_BAD_REQUEST') OR define('HTTP_BAD_REQUEST', 400);
 defined('HTTP_NOT_FOUND') OR define('HTTP_NOT_FOUND', 404);
 
-/*==============================
-=            Message for Create            =
-==============================*/
 
 /**
  * Message Success code
@@ -111,20 +115,21 @@ defined('MESSAGE_CREATE_SUCCESS') OR define('MESSAGE_CREATE_SUCCESS', 'Thêm m�
  */
 defined('MESSAGE_CREATE_ERROR') OR define('MESSAGE_CREATE_ERROR', 'Thêm mới thất bại!');
 
-/**
- * Message Photos are too large code
- */
-defined('MESSAGE_PHOTOS_ERROR') OR define('MESSAGE_PHOTOS_ERROR', 'Hình ảnh vượt quá %u Kb. Vui lòng kiểm tra lại và thực hiện lại thao tác!');
+defined('MESSAGE_CREATE_ERROR_VALIDATE') OR define('MESSAGE_CREATE_ERROR_VALIDATE', 'Lỗi thêm mới cấu hình vui lòng thao tác lại.');
+
 
 /**
- * Message Pfile extension
+ * Message Success code
  */
-defined('MESSAGE_FILE_EXTENSION_ERROR') OR define('MESSAGE_FILE_EXTENSION_ERROR', 'Đuôi file image phải là jpg | jpeg | png | gif!');
+defined('MESSAGE_UPDATE_SUCCESS') OR define('MESSAGE_UPDATE_SUCCESS', 'Sửa thành công!');
 
-/*=====  End of Message for Create  ======*/
-/*==============================
-=            Message for remove            =
-==============================*/
+/**
+ * Message Success code
+ */
+defined('MESSAGE_UPDATE_ERROR') OR define('MESSAGE_UPDATE_ERROR', 'Sửa thất bại!');
+
+defined('MESSAGE_UPDATE_ERROR_VALIDATE') OR define('MESSAGE_UPDATE_ERROR_VALIDATE', 'Lỗi sửa cấu hình vui lòng thao tác lại.');
+
 
 /**
  * Message Success code
@@ -137,15 +142,13 @@ defined('MESSAGE_REMOVE_SUCCESS') OR define('MESSAGE_REMOVE_SUCCESS', 'Xóa thà
 defined('MESSAGE_REMOVE_ERROR') OR define('MESSAGE_REMOVE_ERROR', 'Xóa thất bại!');
 
 /**
- * Message foreign key link check product category and check product
+ * Message Success code
  */
-defined('MESSAGE_FOREIGN_KEY_LINK_ERROR') OR define('MESSAGE_FOREIGN_KEY_LINK_ERROR', 'Category vẫn còn %s bài viết và có %s category là con nên không thẻ xóa!');
-
+defined('MESSAGE_ISSET_ERROR') OR define('MESSAGE_ISSET_ERROR', 'ID không tồn tại!');
 /**
- * Message foreign key check product category and check product
+ * Message Success code
  */
-defined('MESSAGE_FOREIGN_KEY_ERROR') OR define('MESSAGE_FOREIGN_KEY_ERROR', 'Floor vẫn còn %s Bàn nên không thẻ xóa!');
-
+defined('MESSAGE_ISSET_CONFIG_ERROR') OR define('MESSAGE_ISSET_CONFIG_ERROR', 'Cấu hình không tồn tại!');
 
 /**
  * Message check id product category 
@@ -153,38 +156,9 @@ defined('MESSAGE_FOREIGN_KEY_ERROR') OR define('MESSAGE_FOREIGN_KEY_ERROR', 'Flo
 defined('MESSAGE_ID_ERROR') OR define('MESSAGE_ID_ERROR', 'ID phải là số và lớn hơn 0');
 
 /**
- * Message file extension
- */
-defined('MESSAGE_FILE_EXTENSION_ERROR') OR define('MESSAGE_FILE_EXTENSION_ERROR', 'Đuôi file image phải là jpg | jpeg | png | gif!');
-
-
-/**
- * Message deactive banner
- */
-defined('MESSAGE_DEACTIVE_BANNER_ERROR') OR define('MESSAGE_DEACTIVE_BANNER_ERROR', 'Bạn phải tắt banner!');
-defined('MESSAGE_ERROR_BANNER_ERROR') OR define('MESSAGE_ERROR_BANNER_ERROR', 'Không thể tắt!');
-
-/**
- * Message file extension
- */
-defined('MESSAGE_EMPTY_IMAGE_ERROR') OR define('MESSAGE_EMPTY_IMAGE_ERROR', 'Bạn phải chọn hình ảnh');
-
-/*=====  End of Message for remove  ======*/
-
-/*==============================
-=            Message for Edit            =
-==============================*/
-
-/**
  * Message Success code
  */
 defined('MESSAGE_EDIT_SUCCESS') OR define('MESSAGE_EDIT_SUCCESS', 'Sửa thành công!');
-
-
-/**
- * Message Success code
- */
-defined('MESSAGE_ISSET_ERROR') OR define('MESSAGE_ISSET_ERROR', 'ID không tồn tại!');
 
 /**
  * Message Success code
@@ -193,29 +167,20 @@ defined('MESSAGE_EDIT_ERROR') OR define('MESSAGE_EDIT_ERROR', 'Sửa thất bạ
 /**
  * Message Success code
  */
-defined('MESSAGE_ERROR_UPDATE_TURN_ON') OR define('MESSAGE_ERROR_UPDATE_TURN_ON', 'Bạn phải bật Menu cha của Menu hiện tại');
-defined('MESSAGE_ERROR_ACTIVE_PRODUCT') OR define('MESSAGE_ERROR_ACTIVE_PRODUCT', 'Bạn phải bật Danh mục thực đơn của thực đơn hiện tại');
-defined('MESSAGE_ERROR_ACTIVE_POST') OR define('MESSAGE_ERROR_ACTIVE_POST', 'Bạn phải bật Danh mục bài viết của bài viết hiện tại');
-defined('MESSAGE_ERROR_ACTIVE_CATEGORY') OR define('MESSAGE_ERROR_ACTIVE_CATEGORY', 'Bạn phải bật danh mục cha của danh mục hiện tại');
-
+defined('MESSAGE_TURN_OFF_POST_MENU') OR define('MESSAGE_TURN_OFF_POST_MENU', 'Bạn vẫn còn menu đang bật và trỏ trực tiếp đến bài viết click để tới menu!');
 /**
- * Message check total number desk online
+ * Message Success code
  */
-defined('THE_DESK_IS_OVER') OR define('THE_DESK_IS_OVER', 'Số bàn đặt online đã hết');
-defined('ERROR_TOTAL_NUMBER_DESK_ONLINE') OR define('ERROR_TOTAL_NUMBER_DESK_ONLINE', 'Số bàn đặt online còn lại là 0 bạn không thể xác nhận nữa. Vui lòng kiểm tra lại!');
-defined('ERROR_EDIT_STATUS') OR define('ERROR_EDIT_STATUS', 'Không thể thao tác!');
-defined('ERROR_UPDATE_TOTAL_NUMBER_DESK_ONLINE') OR define('ERROR_UPDATE_TOTAL_NUMBER_DESK_ONLINE', 'Lỗi update số bàn đặt online');
-defined('ERROR_TOTAL_CONFIRM_TABLE_RESERVATIONS') OR define('ERROR_TOTAL_CONFIRM_TABLE_RESERVATIONS', 'Số bàn đặt online phải lớn hơn hoặc bằng tổng số đơn đặt bàn đã xác nhận');
-defined('ERROR_GREATER_ZERO') OR define('ERROR_GREATER_ZERO', 'Số bàn đặt online phải lớn hơn 0');
-
-
+defined('MESSAGE_TURN_OFF_PRODUCT_MENU') OR define('MESSAGE_TURN_OFF_PRODUCT_MENU', 'Bạn vẫn còn menu đang bật và trỏ trực tiếp đến sản phẩm. Click để tới menu!');
 /**
- * Message remove check post category-post for menu
+ * Message Success code
  */
-
-defined('MESSAGE_ERROR_REMOVE_POST') OR define('MESSAGE_ERROR_REMOVE_POST', 'Bạn có %u menu là dạng menu trỏ trực tiếp đến bài viết hiện tại nên bạn không thể xóa.');
-defined('MESSAGE_ERROR_REMOVE_POST_CATEGORY') OR define('MESSAGE_ERROR_REMOVE_POST_CATEGORY', 'Bạn có %u menu chọn danh mục hiện tại là menu chính nên bạn không thể xóa.');
-
+defined('MESSAGE_TURN_OFF_CATEGORY_MENU') OR define('MESSAGE_TURN_OFF_CATEGORY_MENU', 'Bạn vẫn còn menu đang bật và chọn danh mục hiện tại là danh mục chính cho menu. Click để tới menu!');
+/**
+ * Message Success code
+ */
+defined('MESSAGE_SUCCESS_TURN_ON_ALL') OR define('MESSAGE_SUCCESS_TURN_ON_ALL', 'Bật thành công');
+defined('MESSAGE_SUCCESS_TURN_OFF_ALL') OR define('MESSAGE_SUCCESS_TURN_OFF_ALL', 'Tắt thành công');
 /**
  * Message menu
  */
@@ -226,5 +191,28 @@ defined('MESSAGE_SUCCESS_TURN_ON') OR define('MESSAGE_SUCCESS_TURN_ON', 'Bật M
 defined('MESSAGE_SUCCESS_TURN_OFF') OR define('MESSAGE_SUCCESS_TURN_OFF', 'Tắt Menu thành công');
 defined('MESSAGE_ERROR_SELECT_ORIGINAL_CATEGORY') OR define('MESSAGE_ERROR_SELECT_ORIGINAL_CATEGORY', 'Bạn phải chọn danh mục cho menu chính');
 defined('MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED') OR define('MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED', 'Bạn phải bật danh mục bài viết mà menu đã chọn (tên danh mục là: %s)');
-defined('MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED') OR define('MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED', 'Bạn phải bật bài viết mà bạn đã chọn làm đường dẫn cho menu (tên bài viết là: %s)');
+defined('MESSAGE_ERROR_TURN_ON_ARTICEL_FOR_SELECTED') OR define('MESSAGE_ERROR_TURN_ON_ARTICEL_FOR_SELECTED', 'Bạn phải bật bài viết hoặc sản phẩm mà menu đã chọn.');
+defined('MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED') OR define('MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED', 'Bạn phải bật bài viết hoặc sản phẩm mà bạn đã chọn làm đường dẫn cho menu');
+defined('MESSAGE_ERROR_TURN_ON_CATEGORY_FOR_SELECTED_CREATE') OR define('MESSAGE_ERROR_TURN_ON_CATEGORY_FOR_SELECTED_CREATE', '---(Danh mục hiện đang tắt bạn phải bật danh mục mà menu đã chọn là menu chính)');
+defined('MESSAGE_ERROR_UPDATE_TURN_ON') OR define('MESSAGE_ERROR_UPDATE_TURN_ON', 'Bạn phải bật Menu cha của Menu hiện tại');
+defined('MESSAGE_ERROR_ACTIVE_PRODUCT') OR define('MESSAGE_ERROR_ACTIVE_PRODUCT', 'Bạn phải bật Danh mục sản phẩm của sản phẩm hiện tại');
+defined('MESSAGE_ERROR_MAIN_SELECTED') OR define('MESSAGE_ERROR_MAIN_SELECTED', 'Bạn phải chọn menu chính');
+
+
+
+defined('MESSAGE_ERROR_REMOVE') OR define('MESSAGE_ERROR_REMOVE', 'Bạn có %u menu là dạng menu trỏ trực tiếp đến bài viết hiện tại nên bạn không thể xóa.');
+defined('MESSAGE_ERROR_REMOVE_CATEGORY') OR define('MESSAGE_ERROR_REMOVE_CATEGORY', 'Bạn có %u menu chọn danh mục hiện tại là menu chính nên bạn không thể xóa.');
+defined('MESSAGE_FOREIGN_KEY_LINK_ERROR') OR define('MESSAGE_FOREIGN_KEY_LINK_ERROR', 'Category vẫn còn %s bài viết và có %s category là con nên không thẻ xóa!');
+defined('MESSAGE_ERROR_REMOVE_CONFIG') OR define('MESSAGE_ERROR_REMOVE_CONFIG', 'Bạn không thể xóa cấu hình vì có %s sử dụng cấu hình!');
+
+/**
+ * Message 
+ */
+defined('MESSAGE_ERROR_ACTIVE_POST') OR define('MESSAGE_ERROR_ACTIVE_POST', 'Bạn phải bật Danh mục bài viết của bài viết hiện tại');
+defined('MESSAGE_ERROR_ACTIVE_CATEGORY') OR define('MESSAGE_ERROR_ACTIVE_CATEGORY', 'Bạn phải bật danh mục cha của danh mục hiện tại');
+
+/**
+ * Message Success code
+ */
+defined('MESSAGE_CREATE_CONFIG_ERROR') OR define('MESSAGE_CREATE_CONFIG_ERROR', 'Danh sách lựa chọn của các ngôn ngữ phải bằng nhau!');
 /*=====  End of Message for Create  ======*/

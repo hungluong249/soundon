@@ -1,14 +1,13 @@
-<?php 
-/**
-* 
-*/
-class Dashboard extends Admin_Controller{
-	
-	function __construct(){
-		parent::__construct();
-	}
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-	public function index(){
-		$this->render('admin/dashboard_view');
-	}
+class Dashboard extends Admin_Controller {
+
+    function __construct(){
+        parent::__construct();
+    }
+
+    public function index(){
+//        $this->load->view('admin/dashboard_view');
+        $this->render('admin/dashboard_view');
+    }
 }

@@ -13,11 +13,5 @@
 <script src="<?php echo site_url('assets/lib/') ?>fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo site_url('assets/lib/') ?>dist/js/adminlte.min.js"></script>
-<script src="<?php echo site_url('assets/lib/') ?>dist/js/moment.min.js"></script>
-<script src="<?php echo site_url('assets/lib/') ?>dist/js/daterangepicker.js"></script>
-<script src="<?php echo site_url('assets/') ?>js/pikaday.js"></script>
-<script src="<?php echo site_url('assets/') ?>js/admin/script.js"></script>
-<script src="<?php echo site_url('assets/') ?>js/admin/common.js"></script>
-<script type="text/javascript" src="<?php echo base_url('assets/js/admin/menu.js'); ?>"></script>
 
 </html>

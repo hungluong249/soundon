@@ -59,7 +59,7 @@
 
 </style>
 <div class="content-wrapper" style="min-height: 916px;">
-    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash() ?>" id="csrf" />
+    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash() ?>" id="csrf_sitecom_token" />
     <section class="content row">
         <div class="container col-md-12">
             <div>
@@ -88,11 +88,11 @@
                                         <button style="margin:7px" type="button" class="btn btn-primary" onclick="location.href='<?php echo base_url('admin/menu/create/' . $item['id']); ?>'">
                                             <span class="glyphicon glyphicon-plus"> </span>
                                         </button>
-                                        <button style="margin:7px" data-url="<?php echo base_url('admin/menu/remove'); ?>" data-id="<?php echo $item['id']; ?>" type="button" class="btn btn-danger btn-remove-menu">
+                                        <button style="margin:7px" data-url="<?php echo base_url('admin/menu/remove'); ?>" data-id="<?php echo $item['id']; ?>" type="button" class="btn btn-danger btn-remove-menu" onclick="remove_menu(this)">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i>
                                         </button>
                                     <?php endif ?>
-                                    <button style="margin:7px" data-url="<?php echo base_url('admin/menu/active'); ?>" data-id="<?php echo $item['id']; ?>" data-active="<?php echo $item['is_activated']; ?>" type="button" class="btn <?php echo ($item['is_activated'] == 0) ? 'btn-success' : 'btn-danger'; ?> btn-active-menu">
+                                    <button style="margin:7px" data-url="<?php echo base_url('admin/menu/active'); ?>" data-id="<?php echo $item['id']; ?>" data-active="<?php echo $item['is_activated']; ?>" type="button" class="btn <?php echo ($item['is_activated'] == 0) ? 'btn-success' : 'btn-danger'; ?> btn-active-menu" onclick="activated_menu(this)">
                                         <i class="fa <?php echo ($item['is_activated'] == 0) ? 'fa-check' : 'fa-remove'; ?>" aria-hidden="true"></i>
                                     </button>
                                 </li>
@@ -120,6 +120,13 @@
 </div>
 
 <script>
+    switch(window.location.origin){
+        case 'http://diamondtour.vn':
+            var HOSTNAME = 'http://diamondtour.vn/';
+            break;
+        default:
+            var HOSTNAME = 'http://localhost/soundon/';
+    }
     $( function() {
         $('#sortable').sortable({
             axis: 'y',
@@ -132,11 +139,73 @@
                         sort: data,
                     },
                     method: 'GET',
-                    url: location.protocol + "//" + location.host + (location.port ? ':' + location.port : '') + "/teddy/admin/menu/sort",
+                    url: location.protocol + "//" + location.host + (location.port ? ':' + location.port : '') + "/soundon/admin/menu/sort",
                 });
             }
         });
     } );
+
+    function activated_menu(ev){
+        var url = HOSTNAME + 'admin/menu/active';
+        var id = $(ev).data('id');
+        if($(ev).hasClass('btn-success')){
+            var question = 'Chắc chắn tắt Menu này? Nếu tắt tất cả các Menu con cũng sẽ bị tắt';
+        }else{
+            var question = 'Chắc chắn bật Menu này?';
+        }
+        if(confirm(question)){
+            $.ajax({
+                method: "post",
+                url: url,
+                data: {
+                    id : id, csrf_sitecom_token : document.getElementById('csrf_sitecom_token').value
+                },
+                success: function(response){
+                    csrf_hash = response.reponse.csrf_hash;
+                    if(response.status == 200){
+                        if($(ev).hasClass('btn-success')){
+                            alert(response.message);
+                        }else{
+                            alert(response.message);
+                        }
+                        location.reload();
+                    }
+                },
+                error: function(responses){
+                     if(responses.responseJSON.status == 404){
+                        alert(responses.responseJSON.message);
+                        location.reload();
+                     }
+                }
+            });
+        }
+    }
+
+    function remove_menu(ev){
+        var url = HOSTNAME + 'admin/menu/remove';
+        var id = $(ev).data('id');
+        if(confirm('Chắc chắn xóa?')){
+            $.ajax({
+                method: "get",
+                url: url,
+                data: {
+                    id : id
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response.status == 200 && response.isExisted == true){
+                        $('.remove_' + id).fadeOut();
+                    }
+                    if(response.status == 200 && response.isExisted == false){
+                        alert('Menu này có chứa Menu con. Vui lòng xóa Menu con trước trước sau đó thực hiện lại thao tác');
+                    }
+                },
+                error: function(jqXHR, exception){
+                    console.log(errorHandle(jqXHR, exception));
+                }
+            });
+        }
+    }
 </script>
 
 

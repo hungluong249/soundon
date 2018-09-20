@@ -9,11 +9,15 @@ if (!function_exists('handle_multi_language_request')) {
      * @param $languages - array of languages use on project
      * @return array
      */
-    function handle_multi_language_request($foreign_key, $id, $request_language_template, $request, $languages) {
+    function handle_multi_language_request($foreign_key, $id, $request_language_template, $request, $languages, $data_lang =array()) {
         $list_request = array_keys($request);
         $converted_request = array();
         for ($i = 0; $i < count($languages); $i++) {
             $converted_request[$i] = array($foreign_key => $id, 'language' => $languages[$i]);
+            if(!empty($data_lang)){
+                $data = (empty($data_lang[$languages[$i]]) ? '{}' : json_encode($data_lang[$languages[$i]]));
+                $converted_request[$i] = array_merge($converted_request[$i],array('data_lang' => $data));
+            }
             for ($j = 0; $j < count($list_request); $j++) {
                 $language_type = explode('_', $list_request[$j]);
                 if (count($language_type) == 2) {
@@ -27,6 +31,7 @@ if (!function_exists('handle_multi_language_request')) {
         }
         return $converted_request;
     }
+
 }
 
 if (!function_exists('handle_common_author_data')) {
@@ -47,6 +52,29 @@ if (!function_exists('handle_common_author_data')) {
         );
     }
 }
+
+if (!function_exists('handle_multi_language_requests')) {
+    /**
+     * @return array
+     */
+    function handle_multi_language_requests($request, $languages, $templates) {
+        $data = array();
+        $data_lang = array('vi' => [], 'en' => []);
+        foreach ($templates as $key => $value) {
+            if($value['type'] != 'file'){
+                if($value['check_language'] == 'true'){
+                    $data[$key] = $request[$key];
+                }else{
+                    foreach ($languages as $k => $val) {
+                        $data_lang[$val][$key] = $request[$key.'_'.$val];
+                    }
+                }
+            }
+        }
+        return array('data' => $data, 'data_lang' => $data_lang);
+    }
+}
+
 
 //build array for dropdown form template
 if (!function_exists('handle_common_author_data')) {
@@ -72,6 +100,19 @@ if (!function_exists('handle_common_author_data')) {
         }
         return $new_data;
     }
+
+    function build_array_by_slug_for_dropdown_menu($data = array()){
+        $new_data = array('' => 'Click để chọn');
+        foreach ($data as $key => $value) {
+            if($value['is_activated'] == 0){
+                $new_data[$value['slug']] = $value['title'];
+            }else{
+                $new_data[$value['slug']] = $value['title'].MESSAGE_ERROR_TURN_ON_POST_PERSENT;
+            }
+
+        }
+        return $new_data;
+    }
 }
 
 //build title for input
@@ -80,18 +121,25 @@ if (!function_exists('handle_common_author_data')) {
         $template = array(
             'vi' => array(
                 'title' => 'Tiêu đề',
-                'metakeywords' => 'Từ khóa Meta',
-                'metadescription' => 'Mô tả Meta',
                 'description' => 'Giới Thiệu',
-                'content' => 'Nội Dung'
+                'content' => 'Nội Dung',
+                'metakeywords' => 'Từ khóa Meta',
+                'metadescription' => 'Mô tả Meta'
             ),
             'en' => array(
                 'title' => 'Title',
-                'metakeywords' => 'Meta keywords',
-                'metadescription' => 'Meta description',
                 'description' => 'Description',
-                'content' => 'Content'
+                'content' => 'Content',
+                'metakeywords' => 'Meta keywords',
+                'metadescription' => 'Meta description'
             ),
+            // 'cn' => array(
+            //     'title' => 'Title china',
+            //     'description' => 'Description',
+            //     'content' => 'Content',
+            //     'metakeywords' => 'Meta keywords',
+            //     'metadescription' => 'Meta description'
+            // ),
         );
         return $template;
     }
