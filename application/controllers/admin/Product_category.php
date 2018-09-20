@@ -184,15 +184,19 @@ class Product_category extends Admin_Controller{
         }
         $this->render('admin/'. $this->data['controller'] .'/edit_product_category_view');
     }
+
     function remove(){
         $id = $this->input->post('id');
+        $this->load->model("menu_model");
         $this->load->model('product_model');
         if($id &&  is_numeric($id) && ($id > 0)){
-            if($this->product_category_model->find_rows(array('id' => $id,'is_deleted' => 0)) == 0){
-                return $this->output
-                    ->set_content_type('application/json')
-                    ->set_status_header(404)
-                    ->set_output(json_encode(array('status' => 404,'message' => MESSAGE_ISSET_ERROR)));
+            $detail = $this->product_category_model->find($id);
+            if(empty($detail)){
+                return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ISSET_ERROR);
+            }
+            $menu_model = $this->menu_model->get_where_array(array('slug' => 'nhom/'.$detail['slug']));
+            if(count($menu_model) > 0){
+                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_CATEGORY, count($menu_model)));
             }
             $where = array('product_category_id' => $id,'is_deleted' => 0);
             $product = $this->product_model->find_rows($where);// lấy số bài viết thuộc về category
@@ -264,13 +268,10 @@ class Product_category extends Admin_Controller{
         $this->load->model('product_model');
         $id = $this->input->post('id');
         $list_categories = $this->product_category_model->get_by_parent_id(null, 'asc');
-        $this->get_multiple_products_with_category($list_categories, $id, $ids);
+        $this->get_multiple_posts_with_category($list_categories, $id, $ids);
         $ids = array_unique($ids);
-
         $data = array('is_activated' => 1);
-
         $this->db->trans_begin();
-
         $update = $this->product_category_model->multiple_update_by_ids($ids, $data);
 
         if ($update == 1) {
@@ -282,6 +283,17 @@ class Product_category extends Admin_Controller{
             return $this->return_api(HTTP_BAD_REQUEST);
         } else {
             $this->db->trans_commit();
+            $this->load->model("menu_model");
+            $product_category = $this->product_category_model->find($id);
+            $menu_model = $this->menu_model->get_where_array(array('slug' => 'nhom/'.$product_category['slug']));
+            if(count($menu_model) > 0){
+                $data = array('is_activated' => 1);
+                foreach ($menu_model as $key => $value) {
+                    foreach ($this->get_id_children_and_id($value['id']) as $k => $val) {
+                        $this->menu_model->common_update($val, array_merge($data,$this->author_data));
+                    }
+                }
+            }
             $reponse = array(
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
@@ -354,5 +366,15 @@ class Product_category extends Admin_Controller{
             return true;
         }
         return false;
+    }
+
+    function get_multiple_posts_with_category($categories, $parent_id = 0, &$ids){
+        foreach ($categories as $key => $item){
+            $ids[] = $parent_id;
+            if ($item['parent_id'] == $parent_id){
+                $ids[] = $item['id'];
+                $this->get_multiple_posts_with_category($categories, $item['id'], $ids);
+            }
+        }
     }
 }

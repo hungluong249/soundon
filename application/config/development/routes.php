@@ -50,22 +50,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'homepage';
-$route['404_override'] = '';
+$route['404_override'] = 'noPage';
 $route['translate_uri_dashes'] = TRUE;
 
-$route['^vi/(.+)$'] = "$1";
-$route['^en/(.+)$'] = "$1";
-$route['^cn/(.+)$'] = "$1";
+$route['^en/(.+)$'] = "$1"; 
+$route['^hu/(.+)$'] = "$1";
 
-$route['^vi$'] = $route['default_controller'];
-$route['^en$'] = $route['default_controller'];
-$route['^cn$'] = $route['default_controller'];
+$route['^en$'] = $route['default_controller']; 
+$route['^hu$'] = $route['default_controller'];
+
+$route['admin'] = 'admin/dashboard';
 
 
-if($this->uri->segment(1) == "admin"){
-	$route['admin'] = 'admin/user/login';
-}
-//else{
-//	$route['([a-zA-Z0-9-_]+)'] = 'test/index/$1';
-//	$route['([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)'] = 'test/index/$1/$2';
-//}
+$route['san-pham/([a-zA-Z0-9-_]+)'] = 'product/detail/$1';
+$route['nhom/([a-zA-Z0-9-_]+)'] = 'product/category/$1';
+
+$route['bai-viet/([a-zA-Z0-9-_]+)'] = 'post/detail/$1';
+$route['danh-muc/([a-zA-Z0-9-_]+)'] = 'post/category/$1';

@@ -42,6 +42,7 @@ class MY_Model extends CI_Model {
         if($lang != ''){
             $this->db->where($this->table_lang .'.language', $lang);
         }
+        $this->db->where("product.price REGEXP '(.)*".'(")'."(1[5-8][0-9]{4}|19[0-8][0-9]{3}|199[0-8][0-9]{2}|1999[0-8][0-9]|19999[0-9]|2[0-9]{5}|300000)".'(")'."(.)*'"); //test có code js built REGEXP
         $this->db->limit($limit, $start);
         $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
         $this->db->order_by($this->table .".id", $order);
@@ -114,12 +115,16 @@ class MY_Model extends CI_Model {
         if(in_array('metadescription', $select)){
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.metadescription ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_metadescription');
         }
+        if(in_array('data_lang', $select)){
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.data_lang ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_data_lang');
+        }
         if($select == null){
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.title ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_title');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.description ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_description');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.content ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_content');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.metakeywords ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_metakeywords');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.metadescription ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_metadescription');
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.data_lang ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_data_lang');
         }
         
         $this->db->from($this->table);
@@ -144,6 +149,19 @@ class MY_Model extends CI_Model {
         $this->db->where('id', $id);
 
         return $this->db->update($this->table, $data);
+    }
+
+    public function common_delete($id) {
+        $this->db->where('id', $id);
+        
+        return $this->db->delete($this->table);
+    }
+
+    public function common_update_multiple($data) {
+        return $this->db->update_batch($this->table, $data,'id');
+    }
+    public function common_update_multiple_lang($data) {
+        return $this->db->update_batch($this->table_lang, $data,'id');
     }
 
     public function multiple_update_by_ids($ids = array(), $data) {
@@ -178,6 +196,22 @@ class MY_Model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    public function get_by_multiple_ids_activated($id = array(), $lang = '') {
+        $this->db->query('SET SESSION group_concat_max_len = 10000000');
+        $this->db->select($this->table .'.*, '.$this->table_lang .'.*');
+        
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        $this->db->where_in($this->table .'.'. $this->table .'_category_id', $id);
+        
+        return $this->db->get()->result_array();
+    }
+
     function update_with_language($id, $language,  $data){
         $this->db->where($this->table .'_id', $id);
         $this->db->where('language', $language);
@@ -200,13 +234,63 @@ class MY_Model extends CI_Model {
         return $temp_slug;
     }
 
+    public function get_all($order = 'desc',$lang = ''){
+        $this->db->select($this->table .'.*, '. $this->table_lang .'.title');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->where($this->table .'.is_deleted', 0);
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        
+        $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
+        $this->db->order_by($this->table .".id", $order);
+
+        return $result = $this->db->get()->result_array();
+    }
+    
+    public function get_by_all($select = array('title'), $lang = 'vi',$order="asc") {
+        $this->db->query('SET SESSION group_concat_max_len = 10000000');
+        $this->db->select($this->table .'.*');
+        if(in_array('title', $select)){
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.title ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_title');
+        }
+        if($select == null){
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.title ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_title');
+        }
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->group_by($this->table .".id");
+        $this->db->order_by($this->table .".sort", $order);
+        return $this->db->get()->result_array();
+    }
 
     public function find_rows($data=array()){
         $this->db->where($data);
         return $this->db->count_all_results($this->table);
     }
+    public function find_results($id_templates){
+        // $this->db->query('SET SESSION group_concat_max_len = 10000000');
+        $this->db->select($this->table .'.id, '. $this->table .'.data, '. $this->table .'.slug, '.$this->table_lang .'.*');
+        // $this->db->select('GROUP_CONCAT('. $this->table_lang .'.id ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_id');
+        // $this->db->select('GROUP_CONCAT('. $this->table_lang .'.data_lang ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_data_lang');
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        $this->db->where($this->table.'.templates_id', $id_templates);
+        return $this->db->get($this->table)->result_array();
+    }
     public function find($id){
         $this->db->where(array('id' => $id,'is_deleted' => 0));
         return $this->db->get($this->table)->row_array();
+    }
+    public function get_where_array($array){
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->where('is_deleted',0);
+        $this->db->where($array);
+        return $result = $this->db->get()->result_array();
     }
 }

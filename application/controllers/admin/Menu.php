@@ -14,7 +14,9 @@ class Menu extends Admin_Controller{
 	function __construct(){
 		parent::__construct();
         $this->load->model('post_category_model');
+        $this->load->model('product_category_model');
         $this->load->model('post_model');
+        $this->load->model('product_model');
         $this->load->model('menu_model');
 		$this->load->helper('common');
         $this->load->helper('file');
@@ -22,6 +24,8 @@ class Menu extends Admin_Controller{
         $this->data['template'] = build_template();
         $this->data['request_language_template'] = $this->request_language_template;
         $this->controller = 'menu';
+        $this->data['main_post'] = $this->post_category_model->get_by_parent_id_when_active(null,'asc');
+        $this->data['main_product'] = $this->product_category_model->get_by_parent_id_when_active(null,'asc');//product
 
 		$this->author_data = handle_author_common_data();
 	}
@@ -33,29 +37,51 @@ class Menu extends Admin_Controller{
 	}
 
     public function create($id = ''){
-        $main_category = $this->post_category_model->get_by_parent_id_when_active(null,'asc');
-        $this->data['main_category'] = $main_category;
+        $this->data['id'] = 0;
+        $this->data['slug'] = '';
+        $this->data['result'] = array();
+        $this->data['detail'] = array('slug' => '');
         if(isset($id) && is_numeric($id)){
             $this->data['id'] = $id;
-            $this->fetch_posts_for_menu($id, $this->controller, $this->page_languages, $main_category);
-        }else{
-            $this->data['id'] = 0;
-            $this->data['slug'] = '';
-            $this->data['posts'] = array('' => 'Click để chọn');
+            $detail = $this->menu_model->get_by_id($id, array('title'));
+            if(!empty($detail['slug'])){
+                $explode_slug = explode('/',$detail['slug']);
+                $main = ($explode_slug[0] == 'nhom' || $explode_slug[0] == 'san-pham') ? $this->data['main_product'] : $this->data['main_post'];
+                $this->fetch_posts_for_menu($id, $this->controller, $this->page_languages, $main,$detail,$explode_slug);
+            }
         }
-
         $this->load->helper('form');
         $this->load->library('form_validation');
-
         $this->form_validation->set_rules('title_vi', 'Tiêu đề', 'required');
         $this->form_validation->set_rules('title_en', 'Title', 'required');
-
-        
-
         if ($this->form_validation->run() == FALSE) {
             $this->render('admin/menu/create_menu_view');
         } else {
             if ($this->input->post()) {
+                if(!empty($this->input->post('selectMain_shared'))){
+                    $explode_slug_category = explode('/', $this->input->post('selectMain_shared'));
+                    if($explode_slug_category[0] == 'nhom'){
+                        $check_category = $this->product_category_model->get_by_slug_check_active($explode_slug_category[1]);
+                    }else{
+                        $check_category = $this->post_category_model->get_by_slug_check_active($explode_slug_category[1]);
+                    }
+                    if(!empty($check_category) && $check_category['is_activated'] == 1){
+                        $this->session->set_flashdata('message_error', sprintf(MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED, $check_category['title']));
+                        redirect('admin/'. $this->controller .'/create/' . $id,'refresh');
+                    }
+                }
+                if(!empty($this->input->post('selectArticle_shared'))){
+                    $explode_slug = explode('/', $this->input->post('selectArticle_shared'));
+                    if($explode_slug[0] == 'san-pham'){
+                        $check = $this->product_model->find_rows(array('slug' => $explode_slug[1], 'is_activated' => 0, 'is_deleted' => 0));
+                    }else{
+                        $check = $this->post_model->find_rows(array('slug' => $explode_slug[1], 'is_activated' => 0, 'is_deleted' => 0));
+                    }
+                    if($check == 0){
+                        $this->session->set_flashdata('message_error', MESSAGE_ERROR_TURN_ON_ARTICEL_FOR_SELECTED);
+                        redirect('admin/'. $this->controller .'/create/' . $id,'refresh');
+                    }
+                }
                 $shared_request = array(
                     'url' => $this->input->post('url_shared'),
                     'is_activated' => $this->input->post('isActived_shared'),
@@ -76,7 +102,6 @@ class Menu extends Admin_Controller{
                 } else {
                     $this->db->trans_commit();
                     $this->session->set_flashdata('message_success', MESSAGE_CREATE_SUCCESS);
-                    $this->menu_model->common_update($id,array_merge(array('check_menu_children' => 1),$this->author_data));
                     if(isset($id) && is_numeric($id)){
                         redirect('admin/'. $this->controller .'/edit/' . $id,'refresh');
                     }else{
@@ -86,42 +111,81 @@ class Menu extends Admin_Controller{
             }
         }
     }
+
+    public function ajax_menu_posts(){
+        if($this->input->post()){
+            if($this->input->post('slug')){
+                $main_category = $this->post_category_model->get_by_parent_id(null,'asc');
+                $detail_category = $this->post_category_model->get_by_slug_check_active($this->input->post('slug'));
+                $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
+                $new_ids = array_unique($ids);
+                $posts = $this->post_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+                $reponse = array(
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                    'result' => $posts,
+                    'deactive' => MESSAGE_ERROR_TURN_ON_POST_PERSENT
+                );
+                return $this->return_api(HTTP_SUCCESS,'',$reponse);
+            }
+        }
+
+    }
+    public function ajax_menu_products(){
+        if($this->input->post()){
+            if($this->input->post('slug')){
+                $main_category = $this->product_category_model->get_by_parent_id(null,'asc');
+                $detail_category = $this->product_category_model->get_by_slug_check_active($this->input->post('slug'));
+                $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
+                $new_ids = array_unique($ids);
+                $products = $this->product_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+                $reponse = array(
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                    'result' => $products,
+                    'deactive' => MESSAGE_ERROR_TURN_ON_POST_PERSENT
+                );
+                return $this->return_api(HTTP_SUCCESS,'',$reponse);
+            }
+        }
+
+    }
+
 // cần sửu nữa chưa xong
     public function edit($id){
         $this->load->model('post_category_model');
         $this->load->helper('form');
         $this->load->library('form_validation');
-        $main_category = $this->post_category_model->get_by_parent_id(null,'asc');
         $subs = $this->menu_model->get_by_parent_id($id, 'asc');
         $this->data['subs'] = $subs;
-
-        // $this->fetch_posts_for_menu($id, $this->controller, $this->page_languages, $main_category);
         $detail_menu = $this->menu_model->get_by_id($id, array('title'));
         $detail = build_language($this->controller, $detail_menu, array('title'), $this->page_languages);
-        $detail_category = $this->post_category_model->get_by_slug_check_active($detail['slug']);
-        $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
-        $new_ids = array_unique($ids);
-        $posts = $this->post_model->get_by_multiple_ids(array_unique($new_ids), 'vi');
-        $posts = build_array_by_slug_for_dropdown($posts);
+        if(!empty($detail_menu['slug'])){
+            $explode_slug = explode('/', $detail_menu['slug']);
+            $main = ($explode_slug[0] == 'nhom' || $explode_slug[0] == 'san-pham') ? $this->data['main_product'] : $this->data['main_post'];
+            if($explode_slug[0] == 'nhom' || $explode_slug[0] == 'san-pham'){
+                $detail_category = $this->product_category_model->get_by_slug_check_active($explode_slug[1]);
+                $this->get_posts_with_category($main, $detail_category['id'], $ids);
+                $new_ids = array_unique($ids);
+                $result = $this->product_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+            }else{
+                $detail_category = $this->post_category_model->get_by_slug_check_active($explode_slug[1]);
+                $this->get_posts_with_category($main, $detail_category['id'], $ids);
+                $new_ids = array_unique($ids);
+                $result = $this->post_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+            }
+            $this->data['result'] = $result;
+            $this->data['slug'] = $detail_category['slug'];
+        }else{
+            $this->data['result'] = array();
+            $this->data['slug'] = '';
+        }
         $this->data['detail'] = $detail;
-        $this->data['posts'] = $posts;
-        $this->data['slug'] = $detail_category['slug'];
-        
-        $this->data['main_category'] = $main_category;
         $this->data['count_sub'] = count($this->menu_model->get_by_parent_id_when_active($id));
-
         $this->form_validation->set_rules('title_vi', 'Tiêu đề', 'required');
         $this->form_validation->set_rules('title_en', 'Title', 'required');
-
         if ($this->form_validation->run() == FALSE) {
             $this->render('admin/'. $this->controller .'/edit_menu_view');
         } else {
             if ($this->input->post()) {
-                $child_menu = $this->menu_model->find_rows(array('parent_id' => $id,'is_activated' => 0,'is_deleted' => 0));
-                if(empty($this->input->post('selectMain_shared')) && $child_menu == 0){
-                    $this->session->set_flashdata('message_error', MESSAGE_ERROR_SELECT_ORIGINAL_CATEGORY);
-                    redirect('admin/'. $this->controller .'/edit/'.$detail['id'], 'refresh');
-                }
                 $parent = $this->menu_model->get_by_id($detail['parent_id'],array('title'));
                 if(!empty($parent['id']) && $this->input->post('isActived_shared') == 0 && $parent['is_activated'] == 1){
                     $this->session->set_flashdata('message_error', MESSAGE_ERROR_UPDATE_TURN_ON);
@@ -134,29 +198,32 @@ class Menu extends Admin_Controller{
                     'slug_post' => $this->input->post('selectArticle_shared'),
                 );
                 if($this->input->post('isActived_shared') == 0){
-                    $category_post = $this->post_category_model->get_by_slug_check_active($this->input->post('selectMain_shared'));
-                    if(!empty($category_post) && $category_post['is_activated'] == 1){
-                        $this->session->set_flashdata('message_error', sprintf(MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED, $category_post['title']));
-                        redirect('admin/'. $this->controller .'/edit/' . $id,'refresh');
+                    if(!empty($this->input->post('selectMain_shared'))){
+                        $explode_slug_category = explode('/', $this->input->post('selectMain_shared'));
+                        if($explode_slug_category[0] == 'san-pham' || $explode_slug_category[0] == 'nhom'){
+                            $check_category = $this->product_category_model->get_by_slug_check_active($explode_slug_category[1]);
+                        }else{
+                            $check_category = $this->post_category_model->get_by_slug_check_active($explode_slug_category[1]);
+                        }
+                        if(!empty($check_category) && $check_category['is_activated'] == 1){
+                            $this->session->set_flashdata('message_error', sprintf(MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED, $check_category['title']));
+                            redirect('admin/'. $this->controller .'/edit/' . $id,'refresh');
+                        }
                     }
                     if(!empty($this->input->post('selectArticle_shared'))){
-                        $post = $this->post_model->get_by_slug_check_active($this->input->post('selectArticle_shared'));
-                        if(!empty($post) && $post['is_activated'] == 1){
-                        $this->session->set_flashdata('message_error', sprintf(MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED, $post['title']));
+                        $explode_slug = explode('/', $this->input->post('selectArticle_shared'));
+                        if($explode_slug[0] == 'san-pham'){
+                            $check = $this->product_model->find_rows(array('slug' => $explode_slug[1], 'is_activated' => 0, 'is_deleted' => 0));
+                        }else{
+                            $check = $this->post_model->find_rows(array('slug' => $explode_slug[1], 'is_activated' => 0, 'is_deleted' => 0));
+                        }
+                        if($check == 0){
+                            $this->session->set_flashdata('message_error', MESSAGE_ERROR_TURN_ON_ARTICEL_FOR_SELECTED);
                             redirect('admin/'. $this->controller .'/edit/' . $id,'refresh');
                         }
                     }
                 }
-                if($this->input->post('isActived_shared') == 0){
-                    $shared_request['check_menu_children'] = 0;
-                }
-                if($detail['slug'] == 'trang-chu' || $detail['slug'] == 'thuc-don' || $detail['slug'] == 'lien-he' || ($this->data['count_sub'] > 0)){
-                    $shared_request = array(
-                        'is_activated' => $this->input->post('isActived_shared')
-                    );
-                }
                 $this->db->trans_begin();
-
                 $update = $this->menu_model->common_update($id,array_merge($shared_request,$this->author_data));
                 if($update){
                     $requests = handle_multi_language_request('menu_id', $id, $this->request_language_template, $this->input->post(), $this->page_languages);
@@ -171,16 +238,7 @@ class Menu extends Admin_Controller{
                 } else {
                     $this->db->trans_commit();
                     $this->session->set_flashdata('message_success', MESSAGE_EDIT_SUCCESS);
-                    if($this->input->post('isActived_shared') == 0){
-                        if(!empty($parent['id'])){
-                            $this->menu_model->common_update($parent['id'],array_merge(array('check_menu_children' => 1),$this->author_data));
-                        }
-                    }else{
-                        if(!empty($parent['id'])){
-                            if(count($this->menu_model->get_by_parent_id_is_activated($detail['parent_id'], 'asc')) == 0){
-                                $this->menu_model->common_update($parent['id'],array_merge(array('check_menu_children' => 0),$this->author_data));
-                            }
-                        }
+                    if($this->input->post('isActived_shared') == 1){
                         foreach ($this->get_id_children_and_id($id) as $key => $value) {
                             $this->menu_model->common_update($value, array_merge(array('is_activated' => 1),$this->author_data));
                         }
@@ -204,13 +262,10 @@ class Menu extends Admin_Controller{
             $data = array('is_deleted' => 1);
             $update = $this->menu_model->common_update($id, $data);
             if($update == 1){ 
-                if(count($this->menu_model->get_by_parent_id_is_activated($detail_menu['parent_id'], 'asc')) == 0){
-                    $this->menu_model->common_update($detail_menu['parent_id'],array_merge(array('check_menu_children' => 0),$this->author_data));
-                }
-                return $this->return_api(HTTP_SUCCESS);
+                return $this->return_api(HTTP_SUCCESS,'');
             }
         }else{
-            return $this->return_api(HTTP_SUCCESS,'',null,false);
+            return $this->return_api(HTTP_SUCCESS,null,'',false);
         }
         return $this->return_api(HTTP_BAD_REQUEST);
     }
@@ -229,6 +284,7 @@ class Menu extends Admin_Controller{
         $id = $this->input->post('id');
         $detail = $this->menu_model->get_by_id_wo_lang($id);
         $parent = $this->menu_model->get_by_id_wo_lang($detail['parent_id']);
+        $children = $this->get_id_children_and_id($id);
         if(!empty($parent) && $detail['is_activated'] == 1 && $parent['is_activated'] == 1){
             $message_warning = MESSAGE_ERROR_TURN_ON_MENU_PRESENT;
             return $this->return_api(HTTP_NOT_FOUND,$message_warning);
@@ -240,94 +296,39 @@ class Menu extends Admin_Controller{
             }
             $message_success = MESSAGE_SUCCESS_TURN_OFF;
         }else{
-            $category_post = $this->post_category_model->get_by_slug_check_active($detail['slug']);
-            if(!empty($category_post) && $category_post['is_activated'] == 1){
-                $message_warning = sprintf(MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED, $category_post['title']);
+            if(explode('/',$detail['slug'])[0] == 'nhom'){
+                $check_category = $this->product_category_model->get_by_slug_check_active(explode('/',$detail['slug'])[1]);
+            }else{
+                $check_category = $this->post_category_model->get_by_slug_check_active(explode('/',$detail['slug'])[1]);
+            }
+            if(!empty($check_category) && $check_category['is_activated'] == 1){
+                $message_warning = sprintf(MESSAGE_ERROR_TURN_ON_POST_CATEGORY_FOR_SELECTED, $check_category['title']);
                 return $this->return_api(HTTP_NOT_FOUND,$message_warning);
             }
             if(!empty($detail['slug_post'])){
-                $post = $this->post_model->get_by_slug_check_active($detail['slug_post']);
-                if(!empty($post) && $post['is_activated'] == 1){
-                    $message_warning = sprintf(MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED, $post['title']);
+                if(explode('/',$detail['slug_post'])[0] == 'san-pham'){
+                    $check = $this->product_model->find_rows(array('slug' => explode('/',$detail['slug_post'])[1], 'is_activated' => 0, 'is_deleted' => 0));
+                }else{
+                    $check = $this->post_model->find_rows(array('slug' => explode('/',$detail['slug_post'])[1], 'is_activated' => 0, 'is_deleted' => 0));
+                }
+                if($check == 0){
+                    $message_warning = MESSAGE_ERROR_TURN_ON_POST_FOR_SELECTED;
                     return $this->return_api(HTTP_NOT_FOUND,$message_warning);
                 }
             }
-            $data = array('is_activated' => 0,'check_menu_children' => 0);
-            if(!empty($parent)){
-                $this->menu_model->common_update($parent['id'],array_merge(array('check_menu_children' => 1),$this->author_data));
-            }
+            $data = array('is_activated' => 0);
             $update = $this->menu_model->common_update($id, $data);
             $message_success = MESSAGE_SUCCESS_TURN_ON;
         }
         if ($update == 0) {
             return $this->return_api(HTTP_BAD_REQUEST);
         } else {
-            if(count($this->menu_model->get_by_parent_id_is_activated($detail['parent_id'], 'asc')) == 0){
-                $this->menu_model->common_update($detail['parent_id'],array_merge(array('check_menu_children' => 0),$this->author_data));
-            }else{
-                $this->menu_model->common_update($detail['parent_id'],array_merge(array('check_menu_children' => 1),$this->author_data));
-            }
             $reponse = array(
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
             return $this->return_api(HTTP_SUCCESS,$message_success,$reponse);
         }
         
-    }
-
-    public function show_sub_category(){
-        $slug = $this->input->get('slug');
-        $category_post = $this->post_category_model->get_by_parent_id(null, 'asc');
-        $detail = $this->post_category_model->get_by_slug($slug);
-        
-        $this->get_sub_category($detail['id'], '---', $sub_cate);
-
-        $this->get_posts_with_category($category_post, $detail['id'], $ids);
-        $new_ids = array_unique($ids);
-        $posts = $this->post_model->get_by_multiple_ids(array_unique($new_ids), 'vi');
-       
-        $reponse = array(
-                'sub_cate' => $sub_cate,
-                'posts' => $posts
-            );
-        return $this->return_api(HTTP_SUCCESS,'',$reponse);
-    }
-
-    public function show_posts(){
-        $slug = $this->input->post('slug');
-        $category_post = $this->post_category_model->get_by_parent_id(null, 'asc');
-        $detail = $this->post_category_model->get_by_slug($slug);
-        
-        $this->get_posts_with_category($category_post, $detail['id'], $ids);
-        $new_ids = array_unique($ids);
-        $posts = $this->post_model->get_by_multiple_ids($new_ids, 'vi');
-        
-        $reponse = array(
-                'csrf_hash' => $this->security->get_csrf_hash(),
-                'posts' => $posts
-            );
-        return $this->return_api(HTTP_SUCCESS,'',$reponse);
-    }
-
-    function get_sub_category($id, $char = '', &$sub_cate){
-        $category = $this->post_category_model->get_by_parent_id($id,'asc');
-        if(count($category) > 0){
-            foreach ($category as $key => $item){
-                $sub_cate[$item['slug']] = $char.$item['title'];
-                continue;
-            }
-            $this->get_sub_category($item['id'], $char.'|---', $sub_cate);
-        }
-    }
-
-    function get_posts_with_category($categories, $parent_id = 0, &$ids){
-        foreach ($categories as $key => $item){
-            $ids[] = $parent_id;
-            if ($item['parent_id'] == $parent_id){
-                $ids[] = $item['id'];
-                $this->get_posts_with_category($categories, $item['id'], $ids);
-            }
-        }
     }
 
     protected function build_parent_title($parent_id){
@@ -345,26 +346,24 @@ class Menu extends Admin_Controller{
         return $title;
     }
 
-    function fetch_posts_for_menu($id, $controller, $page_languages, $main_category){
-        $detail = $this->menu_model->get_by_id($id, array('title'));
+    function fetch_posts_for_menu($id, $controller, $page_languages, $main_category, $detail,$explode_slug){
         $detail = build_language($this->controller, $detail, array('title'), $this->page_languages);
-
-        $detail_category = $this->post_category_model->get_by_slug($detail['slug']);
-        
-
-        $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
-        $new_ids = array_unique($ids);
-        $posts = $this->post_model->get_by_multiple_ids(array_unique($new_ids), 'vi');
-        $posts = build_array_by_slug_for_dropdown($posts);
+        if($explode_slug[0] == 'nhom' || $explode_slug[0] == 'san-pham'){
+            $detail_category = $this->product_category_model->get_by_slug($explode_slug[1]);
+            $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
+            $new_ids = array_unique($ids);
+            $result = $this->product_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+        }else{
+            $detail_category = $this->post_category_model->get_by_slug($explode_slug[1]);
+            $this->get_posts_with_category($main_category, $detail_category['id'], $ids);
+            $new_ids = array_unique($ids);
+            $result = $this->post_model->get_by_multiple_ids_activated(array_unique($new_ids), 'vi');
+        }
         $this->data['detail'] = $detail;
-        $this->data['posts'] = $posts;
+        $this->data['result'] = $result;
         $this->data['slug'] = $detail_category['slug'];
     }
-    public function get_id_children_and_id($id){
-        $category_post = $this->menu_model->get_by_parent_id(null, 'asc');
-        $this->get_posts_with_category($category_post, $id, $ids);
-        $new_ids = array_unique($ids);
-        return $new_ids;
-    }
+
+
 
 }
