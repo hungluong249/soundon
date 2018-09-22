@@ -105,6 +105,7 @@ class Product extends Admin_Controller{
                     'templates_id' => $id_template,
                     'data' => (empty($data) ? '{}' : json_encode($data)),
                     'price' => json_encode($this->input->post('price')),
+                    'color' => json_encode($common['color']),
                     'common' => json_encode($common)
                 );
                 $this->db->trans_begin();
@@ -210,82 +211,95 @@ class Product extends Admin_Controller{
             }
             $this->load->model('trademark_model');
             $this->load->model('features_model');
+            $this->load->model('color_model');
+            $this->data['color_product'] = $this->color_model->get_all_color();
             $this->data['trademark'] = $this->build_new_features_or_trademark($this->trademark_model->get_all_trademark(),$detail['trademark_id']);
             $this->data['features'] = $this->build_new_features_or_trademark($this->features_model->get_all_features(),json_decode($detail['features'],true));
             $subs = $this->product_model->get_by_parent_id($id, 'asc');
             $this->build_new_category($product_category,0,$this->data['product_category'],$subs['product_category_id']);
             $this->data['detail'] = build_language($this->data['controller'], $detail, array('title','description','content', 'data_lang'), $this->page_languages);
             if($this->input->post()){
-                $this->load->library('form_validation');
-                $check_upload = true;
-                if ($_FILES['image_shared']['size'] > 1228800) {
-                    $check_upload = false;
+                if($this->check_all_file_img($_FILES) === false){
+                    return false;
                 }
-                if ($check_upload == true) {
-                    $slug = $this->input->post('slug_shared');
-                    $unique_slug = $this->product_model->build_unique_slug($slug, $id);
-                    if($unique_slug !== $detail['slug']){
-                        if(file_exists("assets/upload/".$this->data['controller']."/".$detail['slug'])) {
-                            rename("assets/upload/".$this->data['controller']."/".$detail['slug'], "assets/upload/".$this->data['controller']."/".$unique_slug);
+                $this->load->library('form_validation');
+                $slug = $this->input->post('slug_shared');
+                $unique_slug = $this->product_model->build_unique_slug($slug, $id);
+                if($unique_slug !== $detail['slug']){
+                    if(file_exists("assets/upload/".$this->data['controller']."/".$detail['slug'])) {
+                        rename("assets/upload/".$this->data['controller']."/".$detail['slug'], "assets/upload/".$this->data['controller']."/".$unique_slug);
+                    }
+                }
+                $request_data = handle_multi_language_requests($this->input->post(), $this->page_languages, $this->data['templates']);
+                $image = $this->upload_image('image_shared', $_FILES['image_shared']['name'], 'assets/upload/'. $this->data['controller'] .'/'.$unique_slug, 'assets/upload/'. $this->data['controller'] . '/' .$unique_slug. '/thumb');
+                unset($_FILES['image_shared']);
+                $common = array('color' => [], 'price_color' => [], 'promotion_color' => [], 'quantity' => [], 'img_color' => []);
+                for ($i=0; $i < count($this->input->post('color')); $i++) { 
+                    $common['color'][] = $this->input->post('color')[$i];
+                    $common['price_color'][] = $this->input->post('price_color')[$i];
+                    $common['promotion_color'][] = $this->input->post('promotion_color')[$i];
+                    $common['quantity'][] = $this->input->post('quantity')[$i];
+                    $common['promotion_check'][] = $this->input->post('promotion_check')[$i];
+                    $img_color = isset(json_decode($detail['common'],true)['img_color'][$i]) ? json_decode($detail['common'],true)['img_color'][$i] : array();
+                    $common['img_color'][] = array_merge($img_color,$this->upload_file('./assets/upload/'. $this->data['controller'].'/'.$slug, "img_color".($i+1), 'assets/upload/'.$this->data['controller'].'/'.$slug.'/thumb'));
+                    unset($_FILES['img_color'.($i+1)]);
+                }
+                $check_file = $this->all_file_common($_FILES, $this->data['templates'],$unique_slug,$detail['data']);
+                $shared_request = array(
+                    'slug' => $unique_slug,
+                    'trademark_id' => $this->input->post('trademark'),
+                    'features' => json_encode($this->input->post('features')),
+                    'product_category_id' => $this->input->post('parent_id_shared'),
+                    'data' => json_encode(array_merge($request_data['data'], $check_file)),
+                    'price' => json_encode($this->input->post('price')),
+                    'color' => json_encode($common['color']),
+                    'common' => json_encode($common)
+                );
+                if($image){
+                    $shared_request['image'] = $image;
+                }
+                $this->db->trans_begin();
+                $update = $this->product_model->common_update($id,array_merge($shared_request,$this->author_data));
+                if($update){
+                    $requests = handle_multi_language_request('product_id', $id, $this->request_language_template, $this->input->post(), $this->page_languages,$request_data['data_lang']);
+                    foreach ($requests as $key => $value) {
+                        $this->product_model->update_with_language($id, $requests[$key]['language'],$value);
+                    }
+                }
+                if ($this->db->trans_status() === false) {
+                    $this->db->trans_rollback();
+                    return $this->return_api(HTTP_NOT_FOUND,MESSAGE_EDIT_ERROR);
+                } else {
+                    $this->db->trans_commit();
+                    if($image != '' && !empty($detail['image'])) {
+                        $this->remove_img($unique_slug,$detail['image']);
+                    }
+                    foreach ($check_file as $key => $value) {
+                        if(!isset($this->data['templates'][$key]['check_multiple'])){
+                            if($value != $detail['data'][$key]){
+                                $this->remove_img($unique_slug,$detail['data'][$key]);
+                            }
+                            
                         }
                     }
-                    $request_data = handle_multi_language_requests($this->input->post(), $this->page_languages, $this->data['templates']);
-                    $image = $this->upload_image('image_shared', $_FILES['image_shared']['name'], 'assets/upload/'. $this->data['controller'] .'/'.$unique_slug, 'assets/upload/'. $this->data['controller'] . '/' .$unique_slug. '/thumb');
-                    unset($_FILES['image_shared']);
-                    $common = array('color' => [], 'price_color' => [], 'promotion_color' => [], 'quantity' => [], 'img_color' => []);
-                    for ($i=0; $i < count($this->input->post('color')); $i++) { 
-                        $common['color'][] = $this->input->post('color')[$i];
-                        $common['price_color'][] = $this->input->post('price_color')[$i];
-                        $common['promotion_color'][] = $this->input->post('promotion_color')[$i];
-                        $common['quantity'][] = $this->input->post('quantity')[$i];
-                        $common['img_color'][] = $this->upload_file('./assets/upload/'. $this->data['controller'].'/'.$slug, "img_color".($i+1), 'assets/upload/'.$this->data['controller'].'/'.$slug.'/thumb');
-                        unset($_FILES['img_color'.($i+1)]);
-                    }
-                    $check_file = $this->all_file_common($_FILES, $this->data['templates'],$unique_slug,$detail['data']);
-                    $shared_request = array(
-                        'slug' => $unique_slug,
-                        'trademark_id' => $this->input->post('trademark'),
-                        'features' => json_encode($this->input->post('features')),
-                        'product_category_id' => $this->input->post('parent_id_shared'),
-                        'data' => json_encode(array_merge($request_data['data'], $check_file)),
-                        'price' => json_encode($this->input->post('price')),
-                        'common' => json_encode($common)
-                    );
-                    if($image){
-                        $shared_request['image'] = $image;
-                    }
-                    $this->db->trans_begin();
-                    $update = $this->product_model->common_update($id,array_merge($shared_request,$this->author_data));
-                    if($update){
-                        $requests = handle_multi_language_request('product_id', $id, $this->request_language_template, $this->input->post(), $this->page_languages,$request_data['data_lang']);
-                        foreach ($requests as $key => $value) {
-                            $this->product_model->update_with_language($id, $requests[$key]['language'],$value);
-                        }
-                    }
-                    if ($this->db->trans_status() === false) {
-                        $this->db->trans_rollback();
-                        return $this->return_api(HTTP_NOT_FOUND,MESSAGE_EDIT_ERROR);
-                    } else {
-                        $this->db->trans_commit();
-                        if($image != '' && !empty($detail['image'])) {
-                            $this->remove_img($unique_slug,$detail['image']);
-                        }
-                        foreach ($check_file as $key => $value) {
-                            if(!isset($this->data['templates'][$key]['check_multiple'])){
-                                if($value != $detail['data'][$key]){
-                                    $this->remove_img($unique_slug,$detail['data'][$key]);
-                                }
-                                
+                    if(count(json_decode($detail['common'],true)['img_color']) > count($common['img_color'])){
+                        for ($i=count($common['img_color']); $i < count(json_decode($detail['common'],true)['img_color']); $i++) { 
+                            foreach (json_decode($detail['common'],true)['img_color'][$i] as $key => $value) {
+                                $this->remove_img($unique_slug,$value);
                             }
                         }
-                        $reponse = array(
-                            'csrf_hash' => $this->security->get_csrf_hash()
-                        );
-                        return $this->return_api(HTTP_SUCCESS,MESSAGE_EDIT_SUCCESS,$reponse);
                     }
-                }else{
-                    $this->session->set_flashdata('message_error', sprintf(MESSAGE_PHOTOS_ERROR, 1200));
-                    redirect('admin/'. $this->data['controller'] .'');
+                    foreach ($check_file as $key => $value) {
+                        if(!isset($this->data['templates'][$key]['check_multiple'])){
+                            if($value != $detail['data'][$key]){
+                                $this->remove_img($unique_slug,$detail['data'][$key]);
+                            }
+                        }
+                    }
+                    $reponse = array(
+                        'csrf_hash' => $this->security->get_csrf_hash()
+                    );
+                    return $this->return_api(HTTP_SUCCESS,MESSAGE_EDIT_SUCCESS,$reponse);
                 }
             }
             $this->render('admin/product/edit_product_view');
@@ -357,6 +371,37 @@ class Product extends Admin_Controller{
             return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ISSET_ERROR);
         }
         return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ID_ERROR);
+    }
+
+    public function remove_image_multiple(){
+        $reponse = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $id = $this->input->post('id');
+        $image = $this->input->post('image');
+        $key = $this->input->post('key');
+        $column = $this->input->post('column');
+        $detail = $this->product_model->get_by_id($id,$this->request_language_template);
+        if($column == 'common'){
+            $data = json_decode($detail[$column],true);
+            $k = array_search($image, $data['img_color'][$key]);
+            unset($data['img_color'][$key][$k]);
+            $data['img_color'][$key] = array_values($data['img_color'][$key]);
+        }else{
+            $data = json_decode($detail[$column],true);
+            $k = array_search($image, $data[$key]);
+            unset($data[$key][$k]);
+            $data[$key] = array_values($data[$key]);
+        }
+        $data = array($column => json_encode($data));
+        $update = $this->product_model->common_update($id, $data);
+        if($update == 1){
+            if($image != '' && file_exists('assets/upload/'.$this->data['controller'].'/'.$detail['slug'].'/'.$image)){
+                $this->remove_img($detail['slug'],$image);
+            }
+            return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_SUCCESS,$reponse);
+        }
+        return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_ERROR,$reponse);
     }
 
     public function remove_image(){
@@ -516,9 +561,11 @@ class Product extends Admin_Controller{
     }
     protected function check_all_file_img($file) {
         foreach ($file as $key => $value) {
-            if(is_array($value['name']) && !empty($value['name'][0])){
-                if($this->check_imgs($value['name'], $value['size']) !== true){
-                    return false;
+            if(is_array($value['name'])){
+                if(!empty($value['name'][0])){
+                    if($this->check_imgs($value['name'], $value['size']) !== true){
+                        return false;
+                    }
                 }
             }else{
                 if(!empty($value['name'])){
@@ -529,6 +576,17 @@ class Product extends Admin_Controller{
             }
         }
         return true;
+    }
+    protected function remove_img($unique_slug = '',$image= ''){
+        if(file_exists('assets/upload/'. $this->data['controller'] .'/'.$unique_slug.'/'.$image)){
+            unlink('assets/upload/'. $this->data['controller'] .'/'.$unique_slug.'/'.$image);
+            $new_array = explode('.', $image);
+            $typeimg = array_pop($new_array);
+            $nameimg = str_replace(".".$typeimg, "", $image);
+            if(file_exists('assets/upload/'. $this->data['controller'] .'/'.$unique_slug.'/thumb/'.$nameimg.'_thumb.'.$typeimg)){
+                unlink('assets/upload/'. $this->data['controller'] .'/'.$unique_slug.'/thumb/'.$nameimg.'_thumb.'.$typeimg);
+            }
+        }
     }
 
 }

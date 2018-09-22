@@ -210,9 +210,14 @@ defined('MESSAGE_ERROR_REMOVE_CONFIG') OR define('MESSAGE_ERROR_REMOVE_CONFIG', 
  */
 defined('MESSAGE_ERROR_ACTIVE_POST') OR define('MESSAGE_ERROR_ACTIVE_POST', 'Bạn phải bật Danh mục bài viết của bài viết hiện tại');
 defined('MESSAGE_ERROR_ACTIVE_CATEGORY') OR define('MESSAGE_ERROR_ACTIVE_CATEGORY', 'Bạn phải bật danh mục cha của danh mục hiện tại');
-
 /**
  * Message Success code
  */
 defined('MESSAGE_CREATE_CONFIG_ERROR') OR define('MESSAGE_CREATE_CONFIG_ERROR', 'Danh sách lựa chọn của các ngôn ngữ phải bằng nhau!');
+
+
+defined('MESSAGE_ERROR_REMOVE_COLOR') OR define('MESSAGE_ERROR_REMOVE_COLOR', 'Bạn không thể xóa màu này vì có sản phâm %u sử dụng màu này');
+defined('MESSAGE_ERROR_REMOVE_FEATURES') OR define('MESSAGE_ERROR_REMOVE_FEATURES', 'Bạn không thể xóa tính năng này vì có sản phâm %u sử dụng tính năng này');
+defined('MESSAGE_ERROR_REMOVE_TRADEMARK') OR define('MESSAGE_ERROR_REMOVE_TRADEMARK', 'Bạn không thể xóa thương hiệu này vì có sản phâm %u sử dụng thương hiệu này');
+
 /*=====  End of Message for Create  ======*/

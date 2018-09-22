@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detail.css">
+<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detailpostnandproduct.css">
 <input type="text" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash() ?>" placeholder="" class="form-control hidden" id="csrf_sitecom_token">
 
 <div class="content-wrapper">
@@ -170,9 +170,7 @@
                         <label>Hình ảnh</label>
                         <div class="row">
                             <div class="item col-md-12">
-                                <div class="mask-lg">
                                     <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $detail['image'] ) ?>" alt="Image Detail" width=100%>
-                                </div>
                             </div>
                         </div>
                         <div class="detail-image col-xs-12">
@@ -185,13 +183,13 @@
                                                 <?php if (isset($templates[$key]['check_multiple'])): ?>
                                                     <?php foreach ($value as $k => $val): ?>
                                                         <div class="col-xs-12 row_<?php echo $k;?>" style="position: relative;padding:0px;margin-bottom: 10px;">
-                                                            <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $val ) ?>" alt="Image Detail" width="100%" >
+                                                            <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $val ) ?>" alt="Image Detail" width="100%" height="150px">
                                                             <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $key ?>')"></i>
                                                         </div>
                                                     <?php endforeach ?>
                                                 <?php else: ?>
                                                     <div class="col-xs-12" style="padding: 0px;margin-bottom: 10px;">
-                                                        <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $value ) ?>" alt="Image Detail" width="100%" >
+                                                        <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $value ) ?>" alt="Image Detail" width="100%" height="150px">
                                                     </div>
                                                 <?php endif ?>
                                             </div>
@@ -203,7 +201,11 @@
                     </div>
                 </div>
             </div>
+            <div id="myModal" class="modal">
+                <img class="modal-content" id="img01">
+            </div>
         </div>
+
         <div>
             <div class="box box-warning">
                 <div class="box-header">
@@ -218,6 +220,7 @@
         <!-- END ACCORDION & CAROUSEL-->
     </section>
 </div>
+<script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
 <script type="text/javascript">
 switch(window.location.origin){
     case 'http://diamondtour.vn':

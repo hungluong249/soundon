@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detailpostnandproduct.css">
 <input type="text" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash() ?>" placeholder="" class="form-control hidden" id="csrf_sitecom_token">
 <input type="text" name="page_languages" value='<?php echo json_encode($page_languages); ?>' placeholder="" class="form-control hidden" id="page_languages">
 <div class="content-wrapper">
@@ -83,7 +83,6 @@
                                                     }
                                                 }else{
                                                     $a_language .='<span class="no_image" style="color:red">Hiện không có hình ảnh nào</span>';
-                                                    
                                                 }
                                             }else{
                                                 if(!empty($detail['data'][$key])){
@@ -105,36 +104,9 @@
                                             case 'textarea':
                                                 $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="">' . $value['title'][$k] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '</br><textarea name="' . $key.'_'.$k . '" value="" class="col-xs-12 ' . (isset($value['check_multiple']) ? 'tinymce-area' : '') . '" rows="5">' .$detail['data_lang_'.$k][$key]. '</textarea>' .$required_span. '</div>';
                                                 break;
-                                            // case 'radio':
-                                            //     $radio = '';
-                                            //     foreach ($value['choice'] as $ks => $val) {
-                                            //        $radio .= '<input type="radio" name="' . $key.'_'.$k . '" value="' . $k . '" /><span style="margin-right:10px;padding-left:5px;">' . $val . '</span>';
-                                            //     }
-                                            //     $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '</br>' . $radio.$required_span .'</div>';
-                                            //     break;
-                                            
-                                            // case 'checkbox':
-                                            //     $checkbox = '';
-                                            //     foreach ($value['choice'] as $ks => $val) {
-                                            //        $checkbox .= '<input type="checkbox" name="' . $key.'_'.$k . '" value="' . $k . '" /><span style="margin-right:10px;padding-left:5px;">' . $val . '</span>';
-                                            //     }
-                                            //     $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '</br>' . $checkbox.$required_span .'</div>';
-                                            //     break;
-                                            
-                                            // case 'select':
-                                            //     $select = '';
-                                            //     foreach ($value['choice'] as $ks => $val) {
-                                            //         $select .= '<option value="' . $k . '">' . $val . '</option>';
-                                            //     }
-                                            //     $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '<select name="' . $key.'_'.$k . '" class="form-control" ' . (isset($value['check_multiple']) ? 'multiple' : '') . '>' . $select . '</select>' .$required_span. '</div>';
-                                            //     break;
-                                            
                                             case 'date':
                                                 $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label><div class="input-group"><div class="input-group-addon"><i class="fa fa-calendar"></i></div><input class="form-control" name="' . $key.'_'.$k . '" placeholder="' .  $value['description'] . '" id="realDPX-min" type="text" value="' .$detail['data_lang_'.$k][$key]. '" ></div>' .$required_span. '</div>';
                                                 break;
-                                            // case 'file':
-                                            //     $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '<input type="' . $value['type'] .'" name="' . $key.'_'.$k . '" class="form-control" placeholder="' .  $value['description'] . '"  ' . (isset($value['check_multiple']) ? 'multiple' : '') . '/>' .$required_span. '</div>';
-                                            //     break;
                                             case 'text':
                                                 $multiple_language[$k] .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title'][$k] . '</label><input type="' . $value['type'] .'" name="' . $key.'_'.$k . '" value="' .$detail['data_lang_'.$k][$key]. '" class="form-control" placeholder="' .  $value['description'] . '" ' . (($key == 'slug_shared') ? 'readonly' : '') . '/>' .$required_span. '</div>';
                                                 break;
@@ -231,6 +203,9 @@
                                 <?php endforeach ?>
                             </div>
                         </div>
+                        <div id="myModal" class="modal">
+                            <img class="modal-content" id="img01">
+                        </div>
                         <?php echo form_close(); ?>
                         <span onclick="submit_shared(this)" id="submid" class="btn btn-default" id="submit_shared" data-dismiss="modal" >Xác nhận</span>
 
@@ -240,7 +215,7 @@
         </div>
     </section>
 </div>
-
+<script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
 <script type="text/javascript">
     switch(window.location.origin){
         case 'http://diamondtour.vn':
@@ -459,25 +434,6 @@
         }
     }
 </script>
-<?php 
-
-    // function build_new_category($categorie, $parent_id = 0, $detail_id,$char = '', &$result=''){
-    //     $cate_child = array();
-    //     foreach ($categorie as $key => $item){
-    //         if ($item['parent_id'] == $parent_id){
-    //             $cate_child[] = $item;
-    //             unset($categorie[$key]);
-    //         }
-    //     }
-    //     if ($cate_child){
-    //         foreach ($cate_child as $key => $value){
-    //         $result .= '<option value="' .$value['id']. '" ' .(($value['id'] == $detail_id)? 'selected' : ''). ' >' .$char.$value['title']. '</option>';
-    //         build_new_category($categorie, $value['id'], $detail_id,$char.'---|',$result) ?>
-            <?php
-    //         }
-    //     }
-    // }
-?>
 
 <?php 
     function build_new_category($categorie, $parent_id = 0, $detail_id, $char = ''){

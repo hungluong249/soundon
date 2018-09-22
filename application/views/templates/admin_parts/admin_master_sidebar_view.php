@@ -15,7 +15,7 @@
                 </div>
             </div>
             <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
+            <form action="#" method="get" class="sidebar-form hidden">
                 <div class="input-group">
                     <input type="text" name="q" class="form-control" placeholder="Search...">
                     <span class="input-group-btn">
@@ -53,13 +53,28 @@
                     </a>
                 </li>
                 <li class="active">
-                    <a href="<?php echo base_url('admin/product') ?>">
-                        <i class="fa fa-cubes"></i> <span>Product</span>
+                    <a href="<?php echo base_url('admin/post') ?>">
+                        <i class="fa fa-newspaper-o"></i> <span>Post</span>
                     </a>
                 </li>
                 <li class="active">
-                    <a href="<?php echo base_url('admin/post') ?>">
-                        <i class="fa fa-newspaper-o"></i> <span>Post</span>
+                    <a href="<?php echo base_url('admin/color') ?>">
+                        <i class="fa fa-cubes"></i> <span>Color</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="<?php echo base_url('admin/features') ?>">
+                        <i class="fa fa-newspaper-o"></i> <span>Features</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="<?php echo base_url('admin/trademark') ?>">
+                        <i class="fa fa-newspaper-o"></i> <span>Trademark</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="<?php echo base_url('admin/product') ?>">
+                        <i class="fa fa-cubes"></i> <span>Product</span>
                     </a>
                 </li>
                 <li class="active">

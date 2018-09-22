@@ -82,7 +82,7 @@ function title_change(ev){
 function check_validate_default(ev){
     let [html, count, id_parent] = ['', 0, ''];
     for (var i = 0; i < document.querySelectorAll('div.form-group.required').length; i++) {
-        let type = document.querySelectorAll('div.form-group.required')[i].firstChild.getAttribute('for');
+        let type = document.querySelectorAll('div.form-group.required')[i].querySelector('label').getAttribute('for');
         if(type == 'radio' || type == 'checkbox'){
             if(document.querySelectorAll('div.form-group.required')[i].querySelectorAll('input:checked').length == 0){
                 document.querySelectorAll('div.form-group.required')[i].classList.add("has-error");
@@ -117,7 +117,7 @@ function check_validate_default(ev){
     }
     //check title required if is require => focus
     if(document.querySelectorAll(`.form-horizontal .has-error`).length > 0){
-        let [type, tag] = [document.querySelectorAll('div.form-group.has-error')[0].firstChild.getAttribute('for'), ''];
+        let [type, tag] = [document.querySelectorAll('div.form-group.has-error')[0].querySelector('label').getAttribute('for'), ''];
         if(type == 'radio' || type == 'checkbox' || type == 'date' || type == 'text'){
             tag = 'input';
         }else{
@@ -163,9 +163,15 @@ function submit_shared(ev){
     }
     var url = window.location.href;
     fetch(url,{method: "POST",body: data}
-    ).then(
-        response => response.json()
-    ).then(
+    ).then( response => {
+        document.getElementById('encypted_ppbtn_all').innerHTML = `<div class="modal" role="dialog" style="display: block; opacity: 0.5">
+            <div class="modal-dialog" style="color:#fff; text-align:center; padding-top:300px;">
+                <i class="fa fa-2x fa-spinner fa-spin" aria-hidden="true"></i>
+            </div>
+        </div>`;
+        console.log(1);
+        return response.json();
+    }).then(
         html => {
             if(html.status == "200"){
                 alert(html.message);
@@ -178,6 +184,7 @@ function submit_shared(ev){
                 alert(html.message);
                 document.getElementById('csrf_sitecom_token').value = html.reponse.csrf_hash;
             }
+            document.getElementById('encypted_ppbtn_all').innerHTML = '';
         }
 
     );

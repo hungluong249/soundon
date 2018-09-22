@@ -1,5 +1,4 @@
-<!-- Content Wrapper. Contains page content -->
-
+<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detailpostnandproduct.css">
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">

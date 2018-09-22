@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detailpostnandproduct.css">
 <style type="text/css">
     .color_product >span:before {
         font-family: "Glyphicons Halflings";
@@ -13,7 +14,6 @@
     margin-top: -1px;transition: .3s;
     }
 </style>
-<link rel="stylesheet" href="<?php echo site_url('assets/sass/admin/') ?>detail.css">
 <input type="text" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash() ?>" placeholder="" class="form-control hidden" id="csrf_sitecom_token">
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -195,7 +195,7 @@
                                     <div class="btn btn-primary col-ms-12 color_product" style="padding:0px; padding-top:5px; width:100%;text-align:left;margin-bottom: 5px;">
                                         <span data-toggle="collapse" data-target="#demo<?php echo $i ?>" class="col-xs-10 check-collapse" style="height:35px;padding-top:2px;">
                                             <span style="padding-left:10px;font-weight: 500;font-size: 1.2em;"></span>
-                                            <b style="font-size: 1.1em;font-weight: 500;"><?php echo $color_product[$i]['vi']?></b>
+                                            <b style="font-size: 1.1em;font-weight: 500;"></b>
                                         </span>
                                     </div>
                                     <div id="demo<?php echo $i ?>" class="collapse in">
@@ -204,8 +204,12 @@
                                                     <tbody class=" col-xs-12" style="padding-left: 0px;">
                                                         <tr>
                                                             <th>Màu sản phẩm: </th>
-                                                            <td><?php echo $color_product[$i]['vi']; ?></td>
-                                                            <td style="padding: 5px;width: 100px; background: <?php echo $color_product[$i]['code_color']; ?>"></td>
+                                                            <?php foreach ($color_product as $key => $value): ?>
+                                                                <?php if ($value['id'] == $common['color'][$i]): ?>
+                                                                    <td class="color"><?php echo $value['vi']; ?></td>
+                                                                    <td style="padding: 5px;width: 100px; background: <?php echo $value['code_color']; ?>"></td>
+                                                                <?php endif ?>
+                                                            <?php endforeach ?>
                                                         </tr>
                                                         <tr>
                                                             <th>Giá sản phẩm: </th>
@@ -231,9 +235,9 @@
                                             <div>
                                                 <div class="item">     
                                                     <?php foreach ($common['img_color'][$i] as $k => $val): ?>
-                                                        <div class="col-sm-4 col-xs-6 row_<?php echo $k;?>" style="position: relative;padding-right:0px;padding-left: 10px; margin-bottom: 10px;">
+                                                        <div class="col-sm-4 col-xs-6 common row_<?php echo $k;?>" style="position: relative;padding-right:0px;padding-left: 10px; margin-bottom: 10px;">
                                                             <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $val ) ?>" alt="Image Detail" width="100%" height="180px">
-                                                            <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $key ?>')"></i>
+                                                            <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $i ?>','common')"></i>
                                                         </div>
                                                     <?php endforeach ?>
                                                 </div>
@@ -251,7 +255,7 @@
             <div class="col-md-3">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Hình ảnh của cấu hình</h3>
+                        <h3 class="box-title">Hình ảnh của sản phẩm</h3>
                     </div>
                     <div class="box-body" style="">
                         <label>Hình ảnh</label>
@@ -271,9 +275,9 @@
                                             <div class="item">     
                                                 <?php if (isset($templates[$key]['check_multiple'])): ?>
                                                     <?php foreach ($value as $k => $val): ?>
-                                                        <div class="col-xs-12 row_<?php echo $k;?>" style="position: relative;padding:0px;margin-bottom: 10px;">
+                                                        <div class="col-xs-12 data row_<?php echo $k;?>" style="position: relative;padding:0px;margin-bottom: 10px;">
                                                             <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $val ) ?>" alt="Image Detail" width="100%" >
-                                                            <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $key ?>')"></i>
+                                                            <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $key ?>', 'data')"></i>
                                                         </div>
                                                     <?php endforeach ?>
                                                 <?php else: ?>
@@ -290,11 +294,14 @@
                     </div>
                 </div>
             </div>
+            <div id="myModal" class="modal">
+                <img class="modal-content" id="img01">
+            </div>
         </div>
         <div>
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title">Chỉnh sửa Bài Viết này?</h3>
+                    <h3 class="box-title">Chỉnh sửa sản phẩm này?</h3>
                 </div>
                 <div class="box-body">
                     <a href="<?php echo base_url('admin/'.$controller.'/edit/'.$detail['id']) ?>" class="btn btn-warning" role="button">Chỉnh sửa</a>
@@ -305,6 +312,13 @@
         <!-- END ACCORDION & CAROUSEL-->
     </section>
 </div>
+<script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
+<script type="text/javascript">
+    for (var i = 0; i < document.querySelectorAll('[id^="demo"]').length; i++) {
+        value = document.querySelectorAll('[id^="demo"]')[i].querySelector('.color').innerHTML;
+        document.querySelectorAll(`[data-target^="#demo"] b`)[i].innerHTML = value;
+    }
+</script>
 <script type="text/javascript">
 switch(window.location.origin){
     case 'http://diamondtour.vn':
@@ -313,13 +327,15 @@ switch(window.location.origin){
     default:
         var HOSTNAMEADMIN = 'http://localhost/soundon/admin';
 }
-function remove_image(controller, id, image, k, key){
+function remove_image(controller, id, image, k, key, column){
     if(confirm('Chắc chắn xóa ảnh này?')){
         let data = new FormData(document.querySelector('form.form-horizontal'));
         data.append('id', id);
         data.append('csrf_sitecom_token', document.getElementById('csrf_sitecom_token').value);
         data.append('image', image);
         data.append('key', key);
+        // data.append('k', k);
+        data.append('column', column);
         var url = HOSTNAMEADMIN + '/' + controller + '/remove_image_multiple';
         fetch(url,{method: "POST",body: data}
         ).then(
@@ -328,7 +344,7 @@ function remove_image(controller, id, image, k, key){
             html => {
                 if(html.status == "200"){
                     alert(html.message);
-                    $('.row_' + k).fadeOut();
+                    $(`#demo${key} .${column}.row_${k}`).fadeOut();
                     document.getElementById('csrf_sitecom_token').value = html.reponse.csrf_hash;
                     
                 }else{
