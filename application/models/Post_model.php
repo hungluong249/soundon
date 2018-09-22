@@ -111,4 +111,39 @@ class Post_model extends MY_Model{
 
         return $result = $this->db->get()->result_array();
     }
+
+    public function get_all_with_pagination_search_api($order = 'desc',$lang = '', $limit = NULL, $start = NULL, $category = '') {
+        $this->db->select($this->table .'.*, '. $this->table_lang .'.*');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        if($category != ''){
+            $this->db->where($this->table .'.post_category_id', $category);
+        }
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->limit($limit, $start);
+        $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
+        $this->db->order_by($this->table .".id", $order);
+
+        return $result = $this->db->get()->result_array();
+    }
+
+    public function count_by_category_id($lang = '',$category_id = ''){
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        if($category_id != ''){
+            $this->db->where($this->table .'.post_category_id', $category_id);
+        }
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->group_by($this->table_lang .'.'.$this->table.'_id');
+        $this->db->where($this->table .'.is_deleted', 0);
+
+        return $result = $this->db->get()->num_rows();
+    }
 }

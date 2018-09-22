@@ -53,21 +53,10 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
-$route['admin'] = 'admin/dashboard';
-
-/**
- * Routes for article
- */
-$route['articles']['get'] = 'articles/article';
-$route['articles/(:num)']['get'] = 'articles/find/$1';
-$route['articles']['post'] = 'articles/article';
-$route['articles/(:num)']['put'] = 'articles/article/$1';
-$route['articles/(:num)']['delete'] = 'articles/article/$1';
-
 /*
 | -------------------------------------------------------------------------
 | Sample REST API Routes
 | -------------------------------------------------------------------------
 */
-//$route['api/example/users/(:num)'] = 'api/example/users/id/$1'; // Example 4
-//$route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/id/$1/format/$3$4'; // Example 8
+$route['api/example/users/(:num)'] = 'api/example/users/id/$1'; // Example 4
+$route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/id/$1/format/$3$4'; // Example 8
