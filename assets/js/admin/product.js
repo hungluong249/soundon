@@ -169,7 +169,6 @@ function submit_shared(ev){
                 <i class="fa fa-2x fa-spinner fa-spin" aria-hidden="true"></i>
             </div>
         </div>`;
-        console.log(1);
         return response.json();
     }).then(
         html => {
