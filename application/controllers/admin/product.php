@@ -83,6 +83,7 @@ class Product extends Admin_Controller{
                     'promotion_color' => [], 
                     'quantity' => [],
                     'promotion_check' => [],
+                    'img_activated' => [],
                     'img_color' => []
                 );
                 for ($i=0; $i < count($this->input->post('color')); $i++) { 
@@ -91,6 +92,7 @@ class Product extends Admin_Controller{
                     $common['promotion_color'][] = $this->input->post('promotion_color')[$i];
                     $common['quantity'][] = $this->input->post('quantity')[$i];
                     $common['promotion_check'][] = $this->input->post('promotion_check')[$i];
+                    $common['img_activated'][] = '';
                     $common['img_color'][] = $this->upload_file('./assets/upload/'. $this->data['controller'].'/'.$slug, "img_color".($i+1), 'assets/upload/'.$this->data['controller'].'/'.$slug.'/thumb');
                     unset($_FILES['img_color'.($i+1)]);
                 }
@@ -233,7 +235,15 @@ class Product extends Admin_Controller{
                 $request_data = handle_multi_language_requests($this->input->post(), $this->page_languages, $this->data['templates']);
                 $image = $this->upload_image('image_shared', $_FILES['image_shared']['name'], 'assets/upload/'. $this->data['controller'] .'/'.$unique_slug, 'assets/upload/'. $this->data['controller'] . '/' .$unique_slug. '/thumb');
                 unset($_FILES['image_shared']);
-                $common = array('color' => [], 'price_color' => [], 'promotion_color' => [], 'quantity' => [], 'img_color' => []);
+                $common = array(
+                    'color' => [], 
+                    'price_color' => [], 
+                    'promotion_color' => [], 
+                    'quantity' => [], 
+                    'img_color' => [],
+                    'img_activated' => []
+                );
+                $img_activated = isset(json_decode($detail['common'],true)['img_activated']) ? json_decode($detail['common'],true)['img_activated'] : [];
                 for ($i=0; $i < count($this->input->post('color')); $i++) { 
                     $common['color'][] = $this->input->post('color')[$i];
                     $common['price_color'][] = $this->input->post('price_color')[$i];
@@ -241,6 +251,7 @@ class Product extends Admin_Controller{
                     $common['quantity'][] = $this->input->post('quantity')[$i];
                     $common['promotion_check'][] = $this->input->post('promotion_check')[$i];
                     $img_color = isset(json_decode($detail['common'],true)['img_color'][$i]) ? json_decode($detail['common'],true)['img_color'][$i] : array();
+                    $common['img_activated'][] = isset($img_activated[$i]) ? $img_activated[$i] : "";
                     $common['img_color'][] = array_merge($img_color,$this->upload_file('./assets/upload/'. $this->data['controller'].'/'.$slug, "img_color".($i+1), 'assets/upload/'.$this->data['controller'].'/'.$slug.'/thumb'));
                     unset($_FILES['img_color'.($i+1)]);
                 }
@@ -385,6 +396,9 @@ class Product extends Admin_Controller{
         if($column == 'common'){
             $data = json_decode($detail[$column],true);
             $k = array_search($image, $data['img_color'][$key]);
+            if($data['img_activated'][$key] == $data['img_color'][$key][$k]){
+                $data['img_activated'][$key] = "";
+            }
             unset($data['img_color'][$key][$k]);
             $data['img_color'][$key] = array_values($data['img_color'][$key]);
         }else{
@@ -589,4 +603,29 @@ class Product extends Admin_Controller{
         }
     }
 
+    public function img_activated(){
+        $id = $this->input->post('id');
+        $image = $this->input->post('image');
+        $key = $this->input->post('key');
+        $column = $this->input->post('column');
+        $detail = $this->product_model->get_by_id($id,$this->request_language_template);
+        $common = json_decode($detail['common'],true);
+        if($common['img_activated'][$key] != $image){
+            $common['img_activated'][$key] = $image;
+            $update_activated = "1";
+        }else{
+            $common['img_activated'][$key] = "";
+            $update_activated = "0";
+        }
+        $data = array($column => json_encode($common));
+        $update = $this->product_model->common_update($id, $data);
+        $reponse = array(
+            'csrf_hash' => $this->security->get_csrf_hash(),
+            'update_activated' => $update_activated
+        );
+        if($update == 1){
+            return $this->return_api(HTTP_SUCCESS,MESSAGE_UPDATE_SUCCESS,$reponse);
+        }
+        return $this->return_api(HTTP_SUCCESS,MESSAGE_UPDATE_ERROR,$reponse);
+    }
 }

@@ -237,6 +237,7 @@
                                                     <?php foreach ($common['img_color'][$i] as $k => $val): ?>
                                                         <div class="col-sm-4 col-xs-6 common row_<?php echo $k;?>" style="position: relative;padding-right:0px;padding-left: 10px; margin-bottom: 10px;">
                                                             <img src="<?php echo base_url('assets/upload/'.$controller.'/'.$detail['slug'].'/'. $val ) ?>" alt="Image Detail" width="100%" height="180px">
+                                                            <i class="fa-2x fa fa-check <?php echo ($common['img_activated'][$i] == $val) ?'avata':''; ?>" style="cursor: pointer; position: absolute;color:<?php echo ($common['img_activated'][$i] == $val) ?'green':'black'; ?>; top:0px;right:30px;" onclick="activated_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $i ?>','common')"></i>
                                                             <i class="fa-2x fa fa-times" style="cursor: pointer; position: absolute;color:red; top:0px;right: 5px;" onclick="remove_image('<?php echo $controller;?>','<?php echo $detail['id']; ?>','<?php echo $val; ?>','<?php echo $k ?>','<?php echo $i ?>','common')"></i>
                                                         </div>
                                                     <?php endforeach ?>
@@ -294,6 +295,7 @@
                     </div>
                 </div>
             </div>
+            <div id="encypted_ppbtn_all"></div>
             <div id="myModal" class="modal">
                 <img class="modal-content" id="img01">
             </div>
@@ -313,47 +315,4 @@
     </section>
 </div>
 <script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
-<script type="text/javascript">
-    for (var i = 0; i < document.querySelectorAll('[id^="demo"]').length; i++) {
-        value = document.querySelectorAll('[id^="demo"]')[i].querySelector('.color').innerHTML;
-        document.querySelectorAll(`[data-target^="#demo"] b`)[i].innerHTML = value;
-    }
-</script>
-<script type="text/javascript">
-switch(window.location.origin){
-    case 'http://diamondtour.vn':
-        var HOSTNAMEADMIN = 'http://diamondtour.vn/admin';
-        break;
-    default:
-        var HOSTNAMEADMIN = 'http://localhost/soundon/admin';
-}
-function remove_image(controller, id, image, k, key, column){
-    if(confirm('Chắc chắn xóa ảnh này?')){
-        let data = new FormData(document.querySelector('form.form-horizontal'));
-        data.append('id', id);
-        data.append('csrf_sitecom_token', document.getElementById('csrf_sitecom_token').value);
-        data.append('image', image);
-        data.append('key', key);
-        // data.append('k', k);
-        data.append('column', column);
-        var url = HOSTNAMEADMIN + '/' + controller + '/remove_image_multiple';
-        fetch(url,{method: "POST",body: data}
-        ).then(
-            response => response.json()
-        ).then(
-            html => {
-                if(html.status == "200"){
-                    alert(html.message);
-                    $(`#demo${key} .${column}.row_${k}`).fadeOut();
-                    document.getElementById('csrf_sitecom_token').value = html.reponse.csrf_hash;
-                    
-                }else{
-                    alert(html.message);
-                    location.reload();
-                }
-            }
-
-        );
-    }
-}
-</script>
+<script src="<?php echo site_url('assets/js/admin/') ?>detail-product.js"></script>
