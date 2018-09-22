@@ -88,7 +88,7 @@ class Trademark extends Admin_Controller {
             if($this->trademark_model->find_rows(array('id' => $id,'is_deleted' => 0)) == 0){
                 return $this->return_api(HTTP_NOT_FOUND, MESSAGE_ISSET_ERROR);
             }
-            $product = $this->product_model->find_rows(array('trademark_id' => $id));// lấy số bài viết thuộc về category
+            $product = $this->product_model->find_rows(array('trademark_id' => $id,'is_deleted' => 0));// lấy số bài viết thuộc về category
             if($product == 0){
                 $data = array('is_deleted' => 1);
                 $update = $this->trademark_model->common_update($id, $data);
@@ -100,7 +100,7 @@ class Trademark extends Admin_Controller {
                 }
                 return $this->return_api(HTTP_NOT_FOUND,MESSAGE_REMOVE_ERROR);
             }else{
-                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_trademark,$product));
+                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_TRADEMARK,$product));
             }
         }
         return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ID_ERROR);

@@ -33,8 +33,8 @@ class Color extends Admin_Controller {
         $this->load->helper('form');
         if($this->input->post()){
             $this->load->library('form_validation');
-            $this->form_validation->set_rules('vi', 'Thương hiệu tiếng Việt', 'required');
-            $this->form_validation->set_rules('en', 'Thương hiệu tiếng Anh', 'required');
+            $this->form_validation->set_rules('vi', 'Màu tiếng Việt', 'required');
+            $this->form_validation->set_rules('en', 'Màu tiếng Anh', 'required');
             if($this->form_validation->run() == TRUE){
                 $color_request = array(
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
@@ -58,8 +58,8 @@ class Color extends Admin_Controller {
         $this->load->helper('form');
         $this->load->library('form_validation');
         if($this->input->post()){
-            $this->form_validation->set_rules('vi', 'Thương hiệu tiếng Việt', 'required');
-            $this->form_validation->set_rules('en', 'Thương hiệu tiếng Anh', 'required');
+            $this->form_validation->set_rules('vi', 'Màu tiếng Việt', 'required');
+            $this->form_validation->set_rules('en', 'Màu tiếng Anh', 'required');
             if($this->form_validation->run() === true){
                 $color_request = array(
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
@@ -84,8 +84,8 @@ class Color extends Admin_Controller {
             if($this->color_model->find_rows(array('id' => $id,'is_deleted' => 0)) == 0){
                 return $this->return_api(HTTP_NOT_FOUND, MESSAGE_ISSET_ERROR);
             }
-            $product = $this->product_model->find_rows(array('color_id' => $id));// lấy số bài viết thuộc về category
-            if($product == 0){
+            $product = $this->product_model->get_all_for_remove($id);// lấy số sản phẩm sử dụng color
+            if(count($product) == 0){
                 $data = array('is_deleted' => 1);
                 $update = $this->color_model->common_update($id, $data);
                 if($update){
@@ -96,7 +96,7 @@ class Color extends Admin_Controller {
                 }
                 return $this->return_api(HTTP_NOT_FOUND,MESSAGE_REMOVE_ERROR);
             }else{
-                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_color,$product));
+                return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE_COLOR,count($product)));
             }
         }
         return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ID_ERROR);

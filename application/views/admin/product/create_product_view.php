@@ -19,6 +19,7 @@
 <input type="text" name="page_languages" value='<?php echo json_encode($page_languages); ?>' placeholder="" class="form-control hidden" id="page_languages">
 <input type="text" value='<?php echo json_encode($color_product); ?>' placeholder="" class="form-control hidden" id="color_product">
 <div class="content-wrapper">
+    <div id="encypted_ppbtn_all"></div>
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>

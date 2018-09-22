@@ -169,4 +169,10 @@ class Product_model extends MY_Model{
 
         return $result = $this->db->get()->result_array();
     }
+
+    public function get_all_for_remove($id_color='',$tables = 'color') {
+        $sql = "SELECT product.* FROM product WHERE is_deleted = ? AND ($tables LIKE ? OR $tables LIKE ? OR $tables LIKE ? OR $tables LIKE ?)";
+        $execute = $this->db->query($sql, array(0,'%"'.$this->db->escape_like_str($id_color).'"%', '%,'.$this->db->escape_like_str($id_color).'"%', '%"'.$this->db->escape_like_str($id_color).',%', '%,'.$this->db->escape_like_str($id_color).',%'));
+        return $execute->result_array();
+    }
 }
