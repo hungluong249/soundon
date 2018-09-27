@@ -174,14 +174,16 @@ class Product extends Admin_Controller{
             if(count($menu_model) > 0){
                 return $this->return_api(HTTP_NOT_FOUND,sprintf(MESSAGE_ERROR_REMOVE, count($menu_model)));
             }
-
-
-
-            $delete = $this->product_model->common_delete($id);//chưa xong
-
-
-
+            $this->db->trans_begin();
+            $delete = $this->product_model->common_delete_join($id);//chưa xong
             if($delete){
+                $this->product_model->common_delete($id);
+            }
+            if ($this->db->trans_status() === false) {
+                $this->db->trans_rollback();
+                return $this->return_api(HTTP_NOT_FOUND,MESSAGE_REMOVE_ERROR);
+            } else {
+                $this->db->trans_commit();
                 $reponse = array(
                     'csrf_hash' => $this->security->get_csrf_hash()
                 );
@@ -191,7 +193,6 @@ class Product extends Admin_Controller{
                 rmdir('./assets/upload/product/'.$product['slug']);
                 return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_SUCCESS,$reponse);
             }
-            return $this->return_api(HTTP_NOT_FOUND,MESSAGE_REMOVE_ERROR);
         }
         return $this->return_api(HTTP_NOT_FOUND,MESSAGE_ID_ERROR);
     }

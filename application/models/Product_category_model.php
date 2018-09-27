@@ -111,4 +111,17 @@ class Product_category_model extends MY_Model{
         $this->db->order_by($this->table .".sort", $order);
         return $this->db->get()->result_array();
     }
+    public function get_all_api($select = array(), $lang = '',$order="asc") {
+        $this->db->select($this->table .'.*, product_category_lang.title as title');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        $this->db->group_by($this->table .".id");
+        $this->db->order_by($this->table .".sort", $order);
+        return $this->db->get()->result_array();
+    }
 }

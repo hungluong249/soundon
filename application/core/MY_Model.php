@@ -153,8 +153,11 @@ class MY_Model extends CI_Model {
 
     public function common_delete($id) {
         $this->db->where('id', $id);
-        
         return $this->db->delete($this->table);
+    }
+    public function common_delete_join($id) {
+        $this->db->where('product_id', $id);
+        return $this->db->delete($this->table_lang);
     }
 
     public function common_update_multiple($data) {
