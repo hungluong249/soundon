@@ -93,12 +93,30 @@ class Product_model extends MY_Model{
         if(in_array('content', $select)){
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.content ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_content');
         }
+        if(in_array('data_lang', $select)){
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.data_lang ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_data_lang');
+        }
         if($select == null){
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.title ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_title');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.description ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_description');
             $this->db->select('GROUP_CONCAT('. $this->table_lang .'.content ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_content');
+            $this->db->select('GROUP_CONCAT('. $this->table_lang .'.data_lang ORDER BY '. $this->table_lang .'.language separator \' ||| \') as '. $this->table .'_data_lang');
         }
         
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        $this->db->where($this->table .'.slug', $slug);
+
+        return $this->db->get()->row_array();
+    }
+
+    public function get_by_slug_api($slug, $lang = '') {
+        $this->db->select($this->table .'.*, product_lang.title as title, product_lang.description as description, product_lang.content as content, product_lang.data_lang as data_lang');
         $this->db->from($this->table);
         $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
         if($lang != ''){
@@ -174,5 +192,40 @@ class Product_model extends MY_Model{
         $sql = "SELECT product.* FROM product WHERE is_deleted = ? AND ($tables LIKE ? OR $tables LIKE ? OR $tables LIKE ? OR $tables LIKE ?)";
         $execute = $this->db->query($sql, array(0,'%"'.$this->db->escape_like_str($id_color).'"%', '%,'.$this->db->escape_like_str($id_color).'"%', '%"'.$this->db->escape_like_str($id_color).',%', '%,'.$this->db->escape_like_str($id_color).',%'));
         return $execute->result_array();
+    }
+    public function count_by_category_id($lang = '',$category_id = ''){
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        if($category_id != ''){
+            $this->db->where($this->table .'.product_category_id', $category_id);
+        }
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->group_by($this->table_lang .'.'.$this->table.'_id');
+        $this->db->where($this->table .'.is_deleted', 0);
+
+        return $result = $this->db->get()->num_rows();
+    }
+    public function get_all_with_pagination_search_api($order = 'desc',$lang = '', $limit = NULL, $start = NULL, $category = '') {
+        $trademark = ($lang != '')? 'trademark.'.$lang.' as trademark' : '';
+        $this->db->select($this->table .'.*, '. $this->table_lang .'.*, '.$trademark);
+        $this->db->from($this->table);
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->join('trademark', 'trademark.id = '. $this->table .'.trademark_id');
+        $this->db->where($this->table .'.is_deleted', 0);
+        $this->db->where($this->table .'.is_activated', 0);
+        if($category != ''){
+            $this->db->where($this->table .'.product_category_id', $category);
+        }
+        if($lang != ''){
+            $this->db->where($this->table_lang .'.language', $lang);
+        }
+        $this->db->limit($limit, $start);
+        $this->db->group_by($this->table_lang .'.'. $this->table .'_id');
+        $this->db->order_by($this->table .".id", $order);
+
+        return $result = $this->db->get()->result_array();
     }
 }

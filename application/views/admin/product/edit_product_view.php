@@ -18,7 +18,6 @@
 <input type="text" name="page_languages" value='<?php echo json_encode($page_languages); ?>' placeholder="" class="form-control hidden" id="page_languages">
 <input type="text" value='<?php echo json_encode($color_product); ?>' placeholder="" class="form-control hidden" id="color_product">
 <div class="content-wrapper">
-    <div id="encypted_ppbtn_all"></div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
@@ -377,9 +376,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="myModal" class="modal">
+                        <div id="encypted_ppbtn_all"></div>
+                        <!-- <div id="myModal" class="modal">
                             <img class="modal-content" id="img01">
-                        </div>
+                        </div> -->
                         <?php echo form_close(); ?>
                         <!-- <span onclick="submit_shared(this)" id="submid" class="btn btn-default" id="submit_shared" data-dismiss="modal" >Xác nhận</span> -->
 
@@ -391,7 +391,7 @@
 </div>
 
 <script src="<?php echo site_url('assets/lib/') ?>DatePickerX/DatePickerX.min.js"></script>
-<script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
+<!-- <script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script> -->
 <script src="<?php echo site_url('assets/js/admin/') ?>product.js"></script>
 <script type="text/javascript">
     for (var i = 0; i < document.querySelectorAll('[id^="demo"]').length; i++) {
