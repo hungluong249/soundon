@@ -1722,7 +1722,6 @@ class Ion_auth_model extends CI_Model
 				}
 			}
 		}
-
 		$this->trigger_events('extra_where');
 		$this->db->update($this->tables['users'], $data, array('id' => $user->id));
 
@@ -1734,7 +1733,6 @@ class Ion_auth_model extends CI_Model
 			$this->set_error('update_unsuccessful');
 			return FALSE;
 		}
-
 		$this->db->trans_commit();
 
 		$this->trigger_events(array('post_update_user', 'post_update_user_successful'));

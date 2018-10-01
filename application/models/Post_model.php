@@ -4,7 +4,6 @@
 * 
 */
 class Post_model extends MY_Model{
-	
 	public $table = 'post';
     public function get_by_post_category_id($post_category_id = array(), $select = array(), $lang = '') {
         $this->db->query('SET SESSION group_concat_max_len = 10000000');

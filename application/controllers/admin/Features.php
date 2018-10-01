@@ -39,6 +39,8 @@ class Features extends Admin_Controller {
                 $features_request = array(
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
                     'en' => mb_convert_case($this->input->post('en'), MB_CASE_TITLE, "UTF-8"),
+                    'content_vi' => $this->input->post('content_vi'),
+                    'content_en' => $this->input->post('content_en')
                 );
                 $insert = $this->features_model->common_insert($features_request);
                 if($insert){
@@ -63,6 +65,8 @@ class Features extends Admin_Controller {
                 $features_request = array(
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
                     'en' => mb_convert_case($this->input->post('en'), MB_CASE_TITLE, "UTF-8"),
+                    'content_vi' => $this->input->post('content_vi'),
+                    'content_en' => $this->input->post('content_en')
                 );
                 $update = $this->features_model->common_update($id, $features_request);
                 if($update){

@@ -108,7 +108,8 @@ class Product extends Admin_Controller{
                     'data' => (empty($data) ? '{}' : json_encode($data)),
                     'price' => json_encode($this->input->post('price')),
                     'color' => json_encode($common['color']),
-                    'common' => json_encode($common)
+                    'common' => json_encode($common),
+                    'type' => $this->input->post('type_product')
                 );
                 $this->db->trans_begin();
                 $insert = $this->product_model->common_insert(array_merge($shared_request,$this->author_data));
@@ -137,20 +138,42 @@ class Product extends Admin_Controller{
     public function detail($id){
         if($id &&  is_numeric($id) && ($id > 0)){
             if($this->product_model->find_rows(array('id' => $id,'is_deleted' => 0)) != 0){
-                $this->load->helper('form');
-                $this->load->library('form_validation');
-                $this->load->model('features_model');
-                $this->load->model('color_model');
-                $detail = $this->product_model->get_by_id($id, array('title', 'description', 'content','data_lang'));
-                $this->data['color_product'] = $this->color_model->get_librarycolor_by_id_array(json_decode($detail['common'],true)['color']);
-                $this->data['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($detail['features'],true));
-                $detail = build_language($this->data['controller'], $detail, array('title', 'description', 'content','data_lang'), $this->page_languages);
-                $parent_title = $this->build_parent_title($detail['product_category_id']);
-                $detail['parent_title'] = $parent_title;
-                $this->data['detail'] = $detail;
-                $this->data['templates'] = array_slice(json_decode($detail['data_templates'],true), $this->data['number_field']);
-                $this->data['templates_all'] = json_decode($detail['data_templates'],true);
-                $this->render('admin/product/detail_product_view');
+                $check = 0;
+                if(isset($_GET['comment'])){
+                    $check = 1;
+                    unset($_GET['comment']);
+                }
+                $this->load->library('pagination');
+                $this->load->model('comment_model');
+                $per_page = 5;
+                $total_rows  = $this->comment_model->count_search_without_by_product_id($id,1);
+                $config = $this->pagination_config(base_url('admin/'.$this->data['controller'].'/detail/'. $id), $total_rows, $per_page, 5);
+                $this->data['page'] = ($this->uri->segment(5)) ? $this->uri->segment(5) : 0;
+                $this->pagination->initialize($config);
+                $this->data['page_links'] = $this->pagination->create_links();
+                $this->data['comments'] = $this->comment_model->get_all_by_product_id($id , $per_page, $this->data['page'],1);
+                if($check == 1){
+                    $reponse = array(
+                        'comment' => $this->data['comments'],
+                        'page_links' => $this->data['page_links'],
+                    );
+                    return $this->return_api(HTTP_SUCCESS,'success',$reponse);
+                }else{
+                    $this->load->helper('form');
+                    $this->load->library('form_validation');
+                    $this->load->model('features_model');
+                    $this->load->model('color_model');
+                    $detail = $this->product_model->get_by_id($id, array('title', 'description', 'content','data_lang'));
+                    $this->data['color_product'] = $this->color_model->get_librarycolor_by_id_array(json_decode($detail['common'],true)['color']);
+                    $this->data['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($detail['features'],true));
+                    $detail = build_language($this->data['controller'], $detail, array('title', 'description', 'content','data_lang'), $this->page_languages);
+                    $parent_title = $this->build_parent_title($detail['product_category_id']);
+                    $detail['parent_title'] = $parent_title;
+                    $this->data['detail'] = $detail;
+                    $this->data['templates'] = array_slice(json_decode($detail['data_templates'],true), $this->data['number_field']);
+                    $this->data['templates_all'] = json_decode($detail['data_templates'],true);
+                    $this->render('admin/product/detail_product_view');
+                }
             }else{
                 $this->session->set_flashdata('message_error',MESSAGE_ISSET_ERROR);
                 redirect('admin/product', 'refresh');
@@ -216,7 +239,7 @@ class Product extends Admin_Controller{
             $this->load->model('features_model');
             $this->load->model('color_model');
             $this->data['color_product'] = $this->color_model->get_all_color();
-            $this->data['trademark'] = $this->build_new_features_or_trademark($this->trademark_model->get_all_trademark(),$detail['trademark_id']);
+            $this->data['trademark'] = $this->trademark_model->get_where_array(array('product_category_id' => $detail['product_category_id']));
             $this->data['features'] = $this->build_new_features_or_trademark($this->features_model->get_all_features(),json_decode($detail['features'],true));
             $subs = $this->product_model->get_by_parent_id($id, 'asc');
             $this->build_new_category($product_category,0,$this->data['product_category'],$subs['product_category_id']);
@@ -265,7 +288,8 @@ class Product extends Admin_Controller{
                     'data' => json_encode(array_merge($request_data['data'], $check_file)),
                     'price' => json_encode($this->input->post('price')),
                     'color' => json_encode($common['color']),
-                    'common' => json_encode($common)
+                    'common' => json_encode($common),
+                    'type' => $this->input->post('type_product')
                 );
                 if($image){
                     $shared_request['image'] = $image;
@@ -628,5 +652,21 @@ class Product extends Admin_Controller{
             return $this->return_api(HTTP_SUCCESS,MESSAGE_UPDATE_SUCCESS,$reponse);
         }
         return $this->return_api(HTTP_SUCCESS,MESSAGE_UPDATE_ERROR,$reponse);
+    }
+    function ajax_trademark(){
+        if ($this->input->post()) {
+            $reponse = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'data' => array()
+            );
+            if(!empty($this->input->post('id')) && $this->input->post('id') != '99999'){
+                $this->load->model('trademark_model');
+                $trademark =  $this->trademark_model->get_where_array(array('product_category_id' => $this->input->post('id')));
+                $reponse['data'] = $trademark;
+            }
+            return $this->return_api(HTTP_SUCCESS,'',$reponse);
+        }else{
+            redirect('admin', 'refresh');
+        }
     }
 }

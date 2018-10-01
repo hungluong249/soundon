@@ -83,7 +83,8 @@
                                         if($key == 'parent_id_shared'){
                                             $select.= $product_category;
                                         }else if($key == 'trademark'){
-                                            $select.= $trademark;
+                                            $select.= '<option value="99999">No brand</option>';
+                                            //$trademark;
                                         }else if($key == 'features'){
                                             $select.= $features;
                                         }else{
@@ -91,7 +92,7 @@
                                                 $select .= '<option value="' . $k . '">' . $val . '</option>';
                                             }
                                         }
-                                        $a_language .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title']['vi'] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '<select name="' .$key.(isset($value['check_multiple']) ? '[]' : ''). '" class="form-control" ' . (isset($value['check_multiple']) ? 'multiple' : '') . '>' . $select . '</select>' .$required_span. '</div>';
+                                        $a_language .= '<div class="form-group col-xs-12 ' .$required. '" ><label for="' . $value['type'] . '">' . $value['title']['vi'] . '</label>' . ($value['description'] ? ' (<i>' .  $value['description'] . '</i>)' : '') . '<select '.(($key == 'parent_id_shared') ? 'onchange="ajax_trademark(this)"': '').' name="' .$key.(isset($value['check_multiple']) ? '[]' : ''). '" class="form-control" ' . (isset($value['check_multiple']) ? 'multiple' : '') . '>' . $select . '</select>' .$required_span. '</div>';
                                         break;
                                     
                                     case 'date':
@@ -197,6 +198,12 @@
                                     </div>
                                     <div class="row">
                                         <span><?php echo $this->session->flashdata('message'); ?></span>
+                                    </div>
+                                    <div class="col-md-12" style="margin-bottom: 10px;">
+                                        <select name="type_product" id="select_templates" class="form-control" required="required">
+                                            <option value="0">Product new</option>
+                                            <option value="1">Product old</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-12" style="padding: 0px;margin-bottom: 10px;">
                                         <label class="col-md-12" for="">
