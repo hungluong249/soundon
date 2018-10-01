@@ -87,6 +87,19 @@
                         <i class="fa fa-align-left"></i> <span>Menu</span>
                     </a>
                 </li>
+                <li class="header">DOCUMENTATION</li>
+                <li>
+                    <a href="<?php echo base_url('admin/user/change_password') ?>">
+                        <i class="fa fa-refresh" aria-hidden="true"></i> <span>Đổi Mật Khẩu</span>
+                    </a>
+                </li>
+                <?php if ($this->ion_auth->is_admin()===TRUE): ?>
+                    <li>
+                        <a href="<?php echo base_url('admin/user/register') ?>">
+                            <i class="fa fa-registered" aria-hidden="true"></i> <span>Tạo tài khoản</span>
+                        </a>
+                    </li>
+                <?php endif ?>
 
 
 

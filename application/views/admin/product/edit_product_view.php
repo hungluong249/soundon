@@ -23,7 +23,7 @@
         <h1>
             Cập nhật
             <small>
-                Bài Viết
+                Sản phẩm
             </small>
         </h1>
     </section>
@@ -35,7 +35,8 @@
                     <div class="box-body">
 
                         <?php
-                        echo form_open_multipart('', array('class' => 'form-horizontal'));
+                            echo form_open_multipart('', array('class' => 'form-horizontal'));
+                            $common = json_decode($detail['common'],true);
                         ?>
                         <?php
                             $a_language = '';
@@ -199,7 +200,7 @@
                                             <?php
                                             echo form_label('Danh mục', 'select');
                                             ?>
-                                            <select name="parent_id_shared" class="form-control">
+                                            <select name="parent_id_shared" class="form-control" onchange="ajax_trademark(this)">
                                                 <option value="">Chọn danh mục</option>
                                                 <?php echo $product_category; ?>
                                             </select>
@@ -211,7 +212,11 @@
                                             ?>
                                             <select name="trademark" class="form-control">
                                                 <option value="">Chọn thương hiệu</option>
-                                                <?php echo $trademark; ?>
+                                                <option value="99999">No brand</option>
+                                                <?php foreach ($trademark as $key => $value): ?>
+                                                    <?php $select = ($value['id'] == $detail['trademark_id'])? ' selected ' : '';?>
+                                                    <option value="<?php echo $value['id']; ?>" <?php echo $select; ?>><?php echo $value['vi']; ?></option>
+                                                <?php endforeach ?>
                                             </select>
                                             <?php echo isset($templates_all['trademark']['required']) ? '<span class="help-block hidden">' .$templates_all['trademark']['required']. '</span>' : '' ;?>
                                         </div>
@@ -285,19 +290,24 @@
                                         <div class="row">
                                             <span><?php echo $this->session->flashdata('message'); ?></span>
                                         </div>
+                                        <div class="col-md-12" style="margin-bottom: 10px;">
+                                            <select name="type_product" id="select_templates" class="form-control" required="required">
+                                                <option value="0" <?php echo ($detail['type'] == 0)?' selected': ''; ?>>Product new</option>
+                                                <option value="1" <?php echo ($detail['type'] == 1)?' selected': ''; ?>>Product old</option>
+                                            </select>
+                                        </div>
                                         <div class="col-md-12" style="padding: 0px;margin-bottom: 10px;">
                                             <label class="col-md-12" for="">
                                                     Số màu của sản phẩm
                                             </label>
-                                            <div class="col-md-10" style="margin-top:5px;">
+                                            <div class="col-md-12" style="margin-top:5px;">
                                                 <?php  
-                                                    echo form_input("numbercolor", set_value("numbercolor"), 'class="form-control" onkeypress=" return isNumberKey(event)" readonly id="numbercolor"');
+                                                    echo form_input("numbercolor", count($common['color']), 'class="form-control" onkeypress=" return isNumberKey(event)" readonly id="numbercolor"');
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="col-md-12" id="content-full-color">
-                                            <?php $common = json_decode($detail['common'],true); ?>
                                             <?php for($k=0;$k<count($common['color']);$k++): ?>
                                                 <div>
                                                     <div class="btn btn-primary col-ms-12 color_product" style="padding:0px; padding-top:5px; width:100%;text-align:left">

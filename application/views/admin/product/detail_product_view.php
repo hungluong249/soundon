@@ -52,6 +52,7 @@
                         <ul class="nav nav-tabs" role="tablist" id="nav-product">
                             <li role="presentation" class="active"><a href="#default-product" class="btn btn-primary" aria-controls="default-product" role="tab" data-toggle="tab" aria-expanded="true">Chi tiết mặc định</a></li>
                             <li role="presentation"><a href="#detail-product" class="btn btn-primary" aria-controls="detail-product" role="tab" data-toggle="tab">Chi tiết sản phẩm</a></li>
+                            <li role="presentation"><a href="#comment-product" class="btn btn-primary" aria-controls="comment-product" role="tab" data-toggle="tab">Bình luận</a></li>
                         </ul>
                     </div>
                     <div class="tab-content">
@@ -97,6 +98,17 @@
                                                             <?php 
                                                                 echo rtrim($result,', ');
                                                             ?>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Loại sản phẩm</th>
+                                                        <td>
+                                                            Sản phẩm 
+                                                            <?php if ($detail['type'] == 0): ?>
+                                                                mới
+                                                            <?php else: ?>
+                                                                cũ
+                                                            <?php endif ?>
                                                         </td>
                                                     </tr>
                                                     <?php if (!empty($data)): ?>
@@ -248,6 +260,39 @@
                                 
                             </div>
                         </div>
+                        <div role="tabpanel" class="tab-pane fade" id="comment-product">
+                            <div class="box-body">
+                                <div class="col-md-12">
+                                    <table class="table table-hover table-bordered table-condensed">
+                                        <tbody id="add-tr">
+                                            <tr>
+                                                <td style="width: 150px"><b><a href="#">Email</a></b></td>
+                                                <td style="width: 100px"><b><a href="#">Họ tên</a></b></td>
+                                                <td><b><a href="#">Nội dung</a></b></td>
+                                                <td style="width: 100px"><b>Operations</b></td>
+                                            </tr>
+                                            <?php foreach ($comments as $key => $value): ?>
+                                                <tr class="remove_<?php echo $value['id'] ?>">
+                                                    <td><?php echo $value['email'] ?></td>
+                                                    <td><?php echo $value['first_name'].' '.$value['last_name']; ?></td>
+                                                    <td><?php echo $value['content'] ?></td>
+                                                    <td>
+                                                        <form class="form_ajax">
+                                                            <a href="javascript:void(0)" title="Xóa" class="btn-removes" onclick="remove('comment','<?php echo $value['id'] ?>')">
+                                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                            </a>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table>
+                                    <div class="col-md-6 col-md-offset-5 page">
+                                        <?php echo $page_links ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.box -->
@@ -314,5 +359,71 @@
         <!-- END ACCORDION & CAROUSEL-->
     </section>
 </div>
+<script type="text/javascript">
+$( document ).ready(function() {
+    $(document).off("click",".page a").on("click",".page a",function(){
+        event.preventDefault();
+        $.ajax({
+            method: "get",
+            url: $(this)[0].href,
+            data: {
+                comment : true
+            },
+            success: function(response){
+                $('tr[class^="remove_"]').remove();
+                html = '';
+                $.each(response.reponse.comment,function(key, value) {
+                    html +=`
+                        <tr class="remove_${value.id}">
+                            <td>${value.email}</td>
+                            <td>${value.first_name} ${value.last_name}</td>
+                            <td>${value.content}</td>
+                            <td>
+                                <form class="form_ajax">
+                                    <a href="javascript:void(0)" title="Xóa" class="btn-removes" data-id="${value.id}" data-controller="comment" onclick="remove('comment','${value.id}')">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </a>
+                                </form>
+                            </td>
+                        </tr>
+                    `;
+                })
+                $('#add-tr').append(html);
+                $('.page').html(response.reponse.page_links);
+            },
+            error: function(jqXHR, exception){
+                location.reload();
+            }
+        });
+    });
+});
+
+function remove(controller, id){
+    var url = HOSTNAMEADMIN + '/' + controller + '/remove';
+    if(confirm('Chắc chắn xóa?')){
+        $.ajax({
+            method: "post",
+            url: url,
+            data: {
+                id : id, csrf_sitecom_token : document.getElementById('csrf_sitecom_token').value
+            },
+            success: function(response){
+                document.getElementById('csrf_sitecom_token').value = response.reponse.csrf_hash;
+                if(response.status == 200){
+                    console.log(response);
+                    console.log(response.message);
+                    if(response.message != 'undefined'){
+                        alert(response.message);
+                    }
+                    $('.remove_' + id).fadeOut();
+                }
+            },
+            error: function(jqXHR, exception){
+                // location.reload();
+            }
+        });
+    }
+}
+</script>
 <script src="<?php echo site_url('assets/js/admin/') ?>showmodalimg.js"></script>
 <script src="<?php echo site_url('assets/js/admin/') ?>detail-product.js"></script>

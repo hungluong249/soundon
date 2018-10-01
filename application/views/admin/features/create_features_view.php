@@ -33,6 +33,7 @@
                                 <div class="row">
                                     <span><?php echo $this->session->flashdata('message'); ?></span>
                                 </div>
+
                                 <div class="col-xs-12" style="padding-top: 5px;"> 
                                     <ul class="nav nav-pills nav-justified" role="tablist">
                                         <?php $i = 0; ?>
@@ -51,9 +52,13 @@
                                         <div role="tabpanel" class="tab-pane fade <?php echo ($i == count($page_languages))? 'active in' : '' ?>" id="<?php echo $key ?>">
                                             <div class="col-xs-12" style="margin-bottom: 5px;">
                                                 <?php
-                                                echo form_label("Tên tính năng $value", $key);
-                                                echo form_error($key);
-                                                echo form_input($key, set_value($key), 'class="form-control" ');
+                                                    echo form_label("Tên tính năng", $key);
+                                                    echo form_error($key);
+                                                    echo form_input($key, set_value($key), 'class="form-control" ');
+
+                                                    echo form_label("Mô tả tính năng", 'content_'. $key);
+                                                    echo form_error('content_'. $key);
+                                                    echo form_textarea('content_'. $key, set_value('content_'. $key, '', false), 'class="tinymce-area form-control" rows="5"');
                                                 ?>
                                             </div>
                                         </div>

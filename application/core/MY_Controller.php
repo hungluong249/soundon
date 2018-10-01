@@ -103,7 +103,7 @@ class Admin_Controller extends MY_Controller {
         parent::__construct();
         $this->data['page_languages'] = array('vi' => 'Tiếng Việt', 'en' => 'English'/*, 'cn' => 'China' */);
         $this->load->library('ion_auth');
-        if (!$this->ion_auth->logged_in()) {
+        if (!$this->ion_auth->in_group('members')) {
             //redirect them to the login page
             redirect('admin/user/login', 'refresh');
         }

@@ -1,3 +1,13 @@
+switch(window.location.origin){
+    case 'http://diamondtour.vn':
+        var HOSTNAMEADMIN = 'http://diamondtour.vn/admin';
+        break;
+    default:
+        var HOSTNAMEADMIN = 'http://localhost/soundon/admin';
+}
+function logout() {
+    window.location.href = HOSTNAMEADMIN + '/user/logout';
+}
 $(document).ready(function(){
     "use strict";
 

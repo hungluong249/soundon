@@ -5,7 +5,7 @@
         <h1>
             Danh sách
             <small>
-                Bài Viết
+                Sản phẩm
             </small>
         </h1>
     </section>

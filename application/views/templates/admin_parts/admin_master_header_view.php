@@ -317,7 +317,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="javascript:void(0);" class="btn btn-default btn-flat" onclick="logout();">Sign out</a>
                                 </div>
                             </li>
                         </ul>

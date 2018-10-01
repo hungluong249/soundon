@@ -189,6 +189,44 @@ function submit_shared(ev){
     );
 
 }
+function ajax_trademark(ev){
+    $.ajax({
+        method: "post",
+        url: HOSTNAME+'admin/product/ajax_trademark',
+        data: {
+            id : ev.value, csrf_sitecom_token : document.getElementById('csrf_sitecom_token').value
+        },
+        beforeSend: function(){
+            document.getElementById('encypted_ppbtn_all').innerHTML = `<div class="modal" role="dialog" style="display: block; opacity: 0.5">
+                <div class="modal-dialog" style="color:#fff; text-align:center; padding-top:300px;">
+                    <i class="fa fa-2x fa-spinner fa-spin" aria-hidden="true"></i>
+                </div>
+            </div>`;
+        },
+        success: function(response){
+            document.getElementById('csrf_sitecom_token').value = response.reponse.csrf_hash;
+            trademark = document.querySelector('[name^="trademark"]').value;
+            html = `
+                <option value="">Click để chọn</option>
+                <option value="99999">No brand</option>
+            `;
+            if (response.reponse.data.length > 0) {
+                for (var i = 0; i < response.reponse.data.length; i++) {
+                    html += `<option value="${response.reponse.data[i].id}" >${response.reponse.data[i].vi}</option>`;
+                }
+            }
+            document.querySelector('[name^="trademark"]').innerHTML = html;
+            if(document.querySelector(`[name^="trademark"] option[value="${trademark}"]`)){
+                document.querySelector(`[name^="trademark"] option[value="${trademark}"]`).setAttribute('selected','selected');
+            }
+            document.getElementById('encypted_ppbtn_all').innerHTML = '';
+        },
+        error: function(jqXHR, exception){
+            console.log(errorHandle(jqXHR, exception));
+            location.reload();
+        }
+    });
+}
 function check_validate(ev,type){
     if(type == 'text'){
         value = (ev.querySelector('input').value == '') ? true : false;
@@ -209,6 +247,9 @@ function check_validate(ev,type){
     }else{
         ev.closest('.required').querySelector('span.help-block').classList.add("hidden");
         ev.closest('.required').classList.remove("has-error");
+        if(ev.name == 'parent_id_shared'){
+            ajax_trademark(ev);
+        }
     }
 }
 for(i = 0 ; i < color_product.length ; i++){
@@ -346,4 +387,8 @@ function check_sale(evt,ev) {
         }
    }
    return true;
+}
+
+function change_trademark(ev){
+
 }
