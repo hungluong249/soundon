@@ -25,7 +25,7 @@ class Post extends REST_Controller
 		$this->load->library('pagination');
 		$config = array();
 
-		$base_url = base_url('api/post/postWithPagination');
+		$base_url = base_url('api/post/getallpost');
 		$total_rows  = $this->post_model->count_by_category_id($lang);
         $per_page = 2;
         $uri_segment = 4;
