@@ -5,7 +5,7 @@
         <h1>
             Danh sách
             <small>
-                Sản phẩm
+                Sản Phẩm
             </small>
         </h1>
     </section>
@@ -32,7 +32,7 @@
                 <div class="box">
                     <div class="box-header">
                         <h3 class="box-title">
-                            Bài Viết
+                            Sản Phẩm
                         </h3>
                     </div>
 
@@ -104,7 +104,7 @@
                                 <?php endforeach ?>
                                 <?php else: ?>
                                     <tr>
-                                        Chưa có Event
+                                        Chưa có sản phẩm
                                     </tr>
                                 <?php endif; ?>
 

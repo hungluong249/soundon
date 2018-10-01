@@ -25,7 +25,7 @@
     <h1>
         Thêm mới
         <small>
-            Sản phẩm
+            Sản Phẩm
         </small>
     </h1>
 </section>
