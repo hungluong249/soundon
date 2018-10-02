@@ -199,4 +199,68 @@ class Products extends Public_Controller {
 
         $this->render('detail_product_view');
     }
+
+    public function created_rating(){
+        $ip = $this->getRealIPAddress();
+        if($this->session->has_userdata($ip) && in_array($this->input->get('product_id'), $this->session->userdata($ip))){
+            return $this->return_api(HTTP_SUCCESS,'Bạn đã đánh giá cho sản phẩm này rồi.');
+        }else{
+            $this->load->model('product_model');
+            $product_id = $this->input->get('product_id');
+            $new_rating = $this->input->get('rating');
+            $product_detail = $this->product_model->find($product_id);
+            $total_rating = $product_detail['total_rating'];
+            $count_rating = $product_detail['count_rating'];
+            $total_rating = $total_rating + $new_rating;
+            $count_rating = $count_rating + 1;
+            $data = array(
+                'total_rating' => $total_rating,
+                'count_rating' => $count_rating
+            );
+            $update  = $this->product_model->common_update($product_id, $data);
+            if($update){
+                $this->session->set_userdata($ip, array($ip, $this->input->get('product_id')));
+                $this->session->mark_as_temp($ip, 3600);
+                $this->data['session_id'] = session_id();
+            }
+        }
+        return $this->return_api(HTTP_SUCCESS,'Đánh giá cho sản phẩm thành công.');
+    }
+
+    function getRealIPAddress(){  
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+            //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+            //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }else{
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    } 
+    public function created_captcha(){
+        $vals = array(
+            'img_path' => './captcha/',
+            'img_url' => base_url('captcha'),
+            'img_width' => '120',
+            'img_height' => 35,
+            'expiration' => 0,
+            'word_length' => 6,
+            'font_size' => 25,
+            'img_id' => 'Imageid',
+            'pool' => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'colors' => array(
+                'background' => array(235, 235, 235),
+                'border' => array(51, 51, 51),
+                'text' => array(255, 0, 0),
+                'grid' => array(255, 255, 255)
+            )
+        );
+        $captcha = create_captcha($vals);
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode(array('status' => 200, 'captcha' => $captcha)));
+    }
 }
