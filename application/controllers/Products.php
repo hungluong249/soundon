@@ -199,7 +199,6 @@ class Products extends Public_Controller {
 
         $this->render('detail_product_view');
     }
-
     public function created_rating(){
         $ip = $this->getRealIPAddress();
         if($this->session->has_userdata($ip) && in_array($this->input->get('product_id'), $this->session->userdata($ip))){

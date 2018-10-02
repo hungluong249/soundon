@@ -116,6 +116,104 @@
 	</div>
 </footer>
 
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginLabel">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+	    <div class="login-box-body">
+	        <p class="login-box-msg">Đăng nhập để truy cập</p>
+	        <?php if ($this->session->flashdata('auth_message')): ?>
+	            <?php echo $this->session->flashdata('auth_message'); ?>
+	        <?php endif ?>
+	        <?php echo form_open('', array('class' => 'form-horizontal')); ?>
+	        <div class="form-group">
+	            <?php echo form_label('Email', 'identity'); ?>
+	            <?php echo form_error('identity'); ?>
+	            <?php echo form_input('identity', '', 'class="form-control"'); ?>
+	        </div>
+	        <div class="form-group">
+	            <?php echo form_label('Mật Khẩu', 'password'); ?>
+	            <?php echo form_error('password'); ?>
+	            <?php echo form_password('password', '', 'class="form-control"'); ?>
+	        </div>
+	        <div class="form-group">
+	            <label>
+	                <?php echo form_checkbox('remember', '1', FALSE); ?> Remember me
+	            </label>
+	        </div>
+	        <div class="form-group">
+	            <?php echo form_submit('submit', 'Log in', 'class="btn btn-primary btn-lg btn-block"'); ?>
+	        </div>
+	        <?php echo form_close(); ?>
+	        <a href="<?php echo base_url('admin/user/forgot_password') ?>">Quên mật khẩu</a><br>
+	    </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signupLabel">Sign up</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+            <?php if ($this->session->flashdata('auth_message')): ?>
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-warning"></i> Alert!</h4>
+                    <?php echo $this->session->flashdata('auth_message'); ?>
+                </div>
+            <?php endif ?>
+            <h1 style="text-align: center;">Đăng ký tài khoản</h1>
+            <?php echo form_open('', array('class' => 'form-horizontal')); ?>
+                <div class="form-group">
+                    <?php echo form_label('Họ:','first_name').'<br />'; ?>
+                    <?php echo form_error('first_name'); ?>
+                    <?php echo form_input('first_name',set_value('first_name'), 'class="form-control"'); ?>
+                </div>
+                <div class="form-group">
+                    <?php echo form_label('Tên:','last_name').'<br />'; ?>
+                    <?php echo form_error('last_name'); ?>
+                    <?php echo form_input('last_name',set_value('last_name'), 'class="form-control"'); ?>
+                </div>
+                <div class="form-group">
+                    <?php echo form_label('Tên Tài Khoản:','username').'<br />'; ?>
+                    <?php echo form_error('username'); ?>
+                    <?php echo form_input('username',set_value('username'), 'class="form-control"'); ?>
+                </div>
+                <div class="form-group">
+                    <?php echo form_label('Email:','email').'<br />'; ?>
+                    <?php echo form_error('email'); ?>
+                    <?php echo form_input('email',set_value('email'), 'class="form-control"'); ?>
+                </div>
+                <div class="form-group">
+                    <?php echo form_label('Mật Khẩu:', 'password').'<br />'; ?>
+                    <?php echo form_error('password'); ?>
+                    <?php echo form_password('password', '','class="form-control"'); ?>
+                </div>
+                <div class="form-group">
+                    <?php echo form_label('Xác Nhận Mật Khẩu:', 'confirm_password').'<br />'; ?>
+                    <?php echo form_error('confirm_password'); ?>
+                    <?php echo form_password('confirm_password', '','class="form-control"').'<br />'; ?>
+                </div>
+                <?php echo form_submit('submit','Đăng Ký', 'class="btn btn-primary btn-lg btn-block"').'<br /><br />'; ?>
+            <?php echo form_close(); ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- jQuery -->
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
@@ -148,7 +246,9 @@
             }
         });
     })
-    
+    function login(){
+    	return false;
+    }
 </script>
 
 </body>

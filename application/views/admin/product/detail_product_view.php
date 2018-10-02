@@ -102,14 +102,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Loại sản phẩm</th>
-                                                        <td>
-                                                            Sản phẩm 
-                                                            <?php if ($detail['type'] == 0): ?>
-                                                                mới
-                                                            <?php else: ?>
-                                                                cũ
-                                                            <?php endif ?>
-                                                        </td>
+                                                        <td>Sản phẩm <?php echo ($detail['type'] == 0)? 'mới' : 'cũ';?></td>
                                                     </tr>
                                                     <?php if (!empty($data)): ?>
                                                         <?php foreach ($data as $key => $value): ?>
