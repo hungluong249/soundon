@@ -260,14 +260,15 @@ class Product_model extends MY_Model{
         return $result = $this->db->get()->result_array();
     }
 
-    public function get_product_by_feature_id_with_pagination_api($order = 'desc',$lang = '', $limit = NULL, $start = NULL, $feature_id = array(), $trademark_id = '', $price = null ,$category = '') {
-        $trademark = ($lang != '')? 'trademark.'.$lang.' as trademark' : '';
-        $this->db->select($this->table .'.*, '. $this->table_lang .'.*, '.$trademark);
+    public function get_product_by_change_with_pagination_api($order = 'desc', $type = 0,$lang = '', $limit = NULL, $start = NULL, $feature_id = array(), $trademark_id = '', $price = null ,$category = '') {
+        $trademark = ($lang != '')? 'trademark.'.$lang.' as trademark,' : '';
+        $this->db->select($this->table .'.*, '. $this->table_lang .'.*, '.$trademark. $this->table.'.id as id');
         $this->db->from($this->table);
-        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'inner');
         $this->db->join('trademark', 'trademark.id = '. $this->table .'.trademark_id');
         $this->db->where($this->table .'.is_deleted', 0);
         $this->db->where($this->table .'.is_activated', 0);
+        $this->db->where($this->table .'.type', $type);
         if($feature_id != null){
             foreach ($feature_id as $key => $value) {
                 $this->db->like($this->table .'.features', $value);
@@ -308,10 +309,11 @@ class Product_model extends MY_Model{
         return $result = $this->db->get()->result_array();
     }
 
-    public function count_by_feature_id($lang = '',$feature_id = array(), $trademark_id = '', $category = ''){
+    public function count_product_by_change($type, $lang = '',$feature_id = array(), $trademark_id = '', $category = ''){
         $this->db->select('*');
         $this->db->from($this->table);
         $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
+        $this->db->where($this->table .'.type', $type);
         if($feature_id != null){
             foreach ($feature_id as $key => $value) {
                 $this->db->like($this->table .'.features', $value);

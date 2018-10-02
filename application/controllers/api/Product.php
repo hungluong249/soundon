@@ -141,6 +141,7 @@ class Product extends REST_Controller
         $lang = $this->get('lang');
         $slug = $this->get('slug');
         $price = $this->get('price');
+        $type = $this->get('type');
         $trademark = $this->get('trademark');
         $features = $this->get('features');
         if ($features != null) {
@@ -153,7 +154,7 @@ class Product extends REST_Controller
         $config = array();
 
         $base_url = base_url('api/product/getproductbyfeatures');
-        $total_rows  = $this->product_model->count_by_feature_id($lang, $features, $trademark, $category_id);
+        $total_rows  = $this->product_model->count_product_by_change($type, $lang, $features, $trademark, $category_id);
         $per_page = 4;
         $uri_segment = 4;
         $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
@@ -169,7 +170,7 @@ class Product extends REST_Controller
         }
         $config = $this->pagination_config($base_url, $total_rows, $per_page, $uri_segment);
         $this->pagination->initialize($config);
-        $result = $this->product_model->get_product_by_feature_id_with_pagination_api('desc', $lang, $per_page, $page, $features, $trademark, $price, $category_id);
+        $result = $this->product_model->get_product_by_change_with_pagination_api('desc', $type, $lang, $per_page, $page, $features, $trademark, $price, $category_id);
         foreach ($result as $key => $value) {
             $result[$key]['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($result[$key]['features']));
             $result[$key]['common'] = json_decode($result[$key]['common'],true);
