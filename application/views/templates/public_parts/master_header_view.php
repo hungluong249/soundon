@@ -72,15 +72,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<i class="fas fa-shopping-cart"></i> <span id="total-cart">0</span>
 						</a>
 					</li>
+					<?php if(empty($username->id)): ?>
+						<li>
+							
+								<a href="<?php echo base_url('')?>" data-toggle="modal" data-target="#login" data-whatever="@getbootstrap">
+									Log in
+								</a>
+						</li>
+    				<?php endif; ?>
 					<li>
-						<a href="<?php echo base_url('')?>">
-							Log in
-						</a>
-					</li>
-					<li>
-						<a href="<?php echo base_url('')?>">
-							Sign up
-						</a>
+						<?php if(!empty($username->id)): ?>
+							<a href="<?php echo base_url('')?>" data-toggle="modal" data-target="#signup" data-whatever="@getbootstrap">
+								Personal information
+							</a>
+        				<?php else: ?>
+							<a href="<?php echo base_url('')?>" data-toggle="modal" data-target="#signup" data-whatever="@getbootstrap">
+								Sign up
+							</a>
+        				<?php endif; ?>
 					</li>
 				</ul>
 			</div>
