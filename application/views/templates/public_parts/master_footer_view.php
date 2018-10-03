@@ -115,105 +115,255 @@
 		</div>
 	</div>
 </footer>
-
-<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="loginLabel">Login</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-	    <div class="login-box-body">
-	        <p class="login-box-msg">Đăng nhập để truy cập</p>
-	        <?php if ($this->session->flashdata('auth_message')): ?>
-	            <?php echo $this->session->flashdata('auth_message'); ?>
-	        <?php endif ?>
-	        <?php echo form_open('', array('class' => 'form-horizontal')); ?>
-	        <div class="form-group">
-	            <?php echo form_label('Email', 'identity'); ?>
-	            <?php echo form_error('identity'); ?>
-	            <?php echo form_input('identity', '', 'class="form-control"'); ?>
-	        </div>
-	        <div class="form-group">
-	            <?php echo form_label('Mật Khẩu', 'password'); ?>
-	            <?php echo form_error('password'); ?>
-	            <?php echo form_password('password', '', 'class="form-control"'); ?>
-	        </div>
-	        <div class="form-group">
-	            <label>
-	                <?php echo form_checkbox('remember', '1', FALSE); ?> Remember me
-	            </label>
-	        </div>
-	        <div class="form-group">
-	            <?php echo form_submit('submit', 'Log in', 'class="btn btn-primary btn-lg btn-block"'); ?>
-	        </div>
-	        <?php echo form_close(); ?>
-	        <a href="<?php echo base_url('admin/user/forgot_password') ?>">Quên mật khẩu</a><br>
+<?php if(empty($username->id)): ?>
+	<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="loginLabel">Login</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+		    <div class="login-box-body">
+		        <p class="login-box-msg">Đăng nhập để truy cập</p>
+		        <?php if ($this->session->flashdata('auth_message')): ?>
+		            <?php echo $this->session->flashdata('auth_message'); ?>
+		        <?php endif ?>
+		        <?php echo form_open('', array('class' => 'form-horizontal')); ?>
+		        <div class="form-group">
+		            <?php echo form_label('Email', 'identity'); ?>
+		            <?php echo form_error('identity'); ?>
+		            <?php echo form_input('identity', '', 'class="form-control"'); ?>
+		        </div>
+		        <div class="form-group">
+		            <?php echo form_label('Mật Khẩu', 'password'); ?>
+		            <?php echo form_error('password'); ?>
+		            <?php echo form_password('password', '', 'class="form-control"'); ?>
+		        </div>
+		        <div class="form-group">
+		            <label>
+		                <?php echo form_checkbox('remember', '1', FALSE); ?> Remember me
+		            </label>
+		        </div>
+		        <div class="form-group">
+		            <?php echo form_submit('submit', 'Log in', 'class="btn btn-primary btn-lg btn-block"'); ?>
+		        </div>
+		        <?php echo form_close(); ?>
+		        <a href="<?php echo base_url('admin/user/forgot_password') ?>">Quên mật khẩu</a><br>
+		    </div>
+	      </div>
 	    </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="signupLabel">Sign up</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div>
-            <?php if ($this->session->flashdata('auth_message')): ?>
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-warning"></i> Alert!</h4>
-                    <?php echo $this->session->flashdata('auth_message'); ?>
+	  </div>
+	</div>
+	<div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="signupLabel">Sign up</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <div>
+	            <?php if ($this->session->flashdata('auth_message')): ?>
+	                <div class="alert alert-success alert-dismissible">
+	                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	                    <h4><i class="icon fa fa-warning"></i> Alert!</h4>
+	                    <?php echo $this->session->flashdata('auth_message'); ?>
+	                </div>
+	            <?php endif ?>
+	            <h1 style="text-align: center;">Đăng ký tài khoản</h1>
+	            <?php echo form_open('', array('class' => 'form-horizontal')); ?>
+	                <div class="form-group">
+	                    <?php echo form_label('Họ:','first_name').'<br />'; ?>
+	                    <?php echo form_error('first_name'); ?>
+	                    <?php echo form_input('first_name',set_value('first_name'), 'class="form-control"'); ?>
+	                </div>
+	                <div class="form-group">
+	                    <?php echo form_label('Tên:','last_name').'<br />'; ?>
+	                    <?php echo form_error('last_name'); ?>
+	                    <?php echo form_input('last_name',set_value('last_name'), 'class="form-control"'); ?>
+	                </div>
+	                <div class="form-group">
+	                    <?php echo form_label('Tên Tài Khoản:','username').'<br />'; ?>
+	                    <?php echo form_error('username'); ?>
+	                    <?php echo form_input('username',set_value('username'), 'class="form-control"'); ?>
+	                </div>
+	                <div class="form-group">
+	                    <?php echo form_label('Email:','email').'<br />'; ?>
+	                    <?php echo form_error('email'); ?>
+	                    <?php echo form_input('email',set_value('email'), 'class="form-control"'); ?>
+	                </div>
+	                <div class="form-group">
+	                    <?php echo form_label('Mật Khẩu:', 'password').'<br />'; ?>
+	                    <?php echo form_error('password'); ?>
+	                    <?php echo form_password('password', '','class="form-control"'); ?>
+	                </div>
+	                <div class="form-group">
+	                    <?php echo form_label('Xác Nhận Mật Khẩu:', 'confirm_password').'<br />'; ?>
+	                    <?php echo form_error('confirm_password'); ?>
+	                    <?php echo form_password('confirm_password', '','class="form-control"').'<br />'; ?>
+	                </div>
+	                <?php echo form_submit('submit','Đăng Ký', 'class="btn btn-primary btn-lg btn-block"').'<br /><br />'; ?>
+	            <?php echo form_close(); ?>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+<?php else: ?>
+	<div class="modal fade" id="Personal" tabindex="-1" role="dialog" aria-labelledby="PersonalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="PersonalLabel">Personal information</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <div>
+	            <h4 style="text-align: center;">Thông tin cá nhân</h4>
+	            <table class="table table-inverse">
+	            	<tbody>
+	            		<tr>
+	            			<th>Họ và tên</th>
+	            			<td><?php echo $username->first_name.' '.$username->last_name;?></td>
+	            			<td>
+	            				<a href="<?php echo base_url('')?>" class="edit_name" data-toggle="modal" data-target="#edit_name" data-whatever="@getbootstrap" class="close" data-dismiss="modal" aria-label="Close">
+									Edit
+								</a>
+							</td>
+	            		</tr>
+	            		<tr>
+	            			<th>Email</th>
+	            			<td><?php echo $username->email;?></td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<th>Update</th>
+	            			<td>
+	            				<a href="<?php echo base_url('')?>" class="edit_password" data-toggle="modal" data-target="#edit_password" data-whatever="@getbootstrap" class="close" data-dismiss="modal" aria-label="Close">
+									Đổi mật khẩu
+								</a>
+	            			</td>
+	            			<td></td>
+	            		</tr>
+	            	</tbody>
+	            </table>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal fade" id="edit_name" tabindex="-1" role="dialog" aria-labelledby="edit_nameLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="edit_nameLabel">Update information</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <div>
+	            <h4 style="text-align: center;">Thay đổi thông tin cá nhân</h4>
+	            <table class="table table-inverse">
+	            	<tbody>
+	            		<tr>
+	            			<th>Họ</th>
+	            			<td><input type="text" class="form-control" value="<?php echo $username->first_name;?>"></td>
+	            		</tr>
+	            		<tr>
+	            			<th>Tên</th>
+	            			<td><input type="text" class="form-control" value="<?php echo $username->last_name;?>"></td>
+	            		</tr>
+	            	</tbody>
+	            </table>
+	            <div class="col-xs-12" style="float: right;padding-right: 10px;">
+	            	<span class="btn btn-primary" style="margin-left:5px " class="close" data-dismiss="modal" aria-label="Close">Hủy</span>
+	            	<span class="btn btn-primary">Xác nhận</span>
+	            </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal fade" id="edit_password" tabindex="-1" role="dialog" aria-labelledby="edit_passwordLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="edit_passwordLabel">Update Password</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <div>
+	            <h4 style="text-align: center;">Thay đổi mật khẩu</h4>
+	            <table class="table table-inverse">
+	            	<tbody>
+	            		<tr>
+	            			<th>Mật khẩu cũ</th>
+	            			<td><input type="text" class="form-control" placeholder="Nhập mật khẩu cũ"></td>
+	            		</tr>
+	            		<tr>
+	            			<th>Mật khẩu mới</th>
+	            			<td><input type="text" class="form-control" placeholder="Nhập mật khẩu mới"></td>
+	            		</tr>
+	            		<tr>
+	            			<th>Xác nhận mật khẩu mới</th>
+	            			<td><input type="text" class="form-control" placeholder="Xác nhận mật khẩu mới"></td>
+	            		</tr>
+	            	</tbody>
+	            </table>
+	            <div class="col-xs-12" style="float: right;padding-right: 10px;">
+	            	<span class="btn btn-primary" style="margin-left:5px " class="close" data-dismiss="modal" aria-label="Close">Hủy</span>
+	            	<span class="btn btn-primary">Xác nhận</span>
+	            </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal fade" id="comment" tabindex="-1" role="dialog" aria-labelledby="commentLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="commentLabel">Comment</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <div>
+	            <h4 style="text-align: center;">Bình luận</h4>
+                <div class="col-xs-12" style="margin-bottom: 10px;">
+                    <span class="label label-default">Rating:</span>
+                    <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fas fa-star-half-alt"></i></li>
                 </div>
-            <?php endif ?>
-            <h1 style="text-align: center;">Đăng ký tài khoản</h1>
-            <?php echo form_open('', array('class' => 'form-horizontal')); ?>
-                <div class="form-group">
-                    <?php echo form_label('Họ:','first_name').'<br />'; ?>
-                    <?php echo form_error('first_name'); ?>
-                    <?php echo form_input('first_name',set_value('first_name'), 'class="form-control"'); ?>
+                <div class="col-xs-12" style="margin-bottom: 10px;">
+                    <input type="" name="" class="form-control">
                 </div>
-                <div class="form-group">
-                    <?php echo form_label('Tên:','last_name').'<br />'; ?>
-                    <?php echo form_error('last_name'); ?>
-                    <?php echo form_input('last_name',set_value('last_name'), 'class="form-control"'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo form_label('Tên Tài Khoản:','username').'<br />'; ?>
-                    <?php echo form_error('username'); ?>
-                    <?php echo form_input('username',set_value('username'), 'class="form-control"'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo form_label('Email:','email').'<br />'; ?>
-                    <?php echo form_error('email'); ?>
-                    <?php echo form_input('email',set_value('email'), 'class="form-control"'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo form_label('Mật Khẩu:', 'password').'<br />'; ?>
-                    <?php echo form_error('password'); ?>
-                    <?php echo form_password('password', '','class="form-control"'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo form_label('Xác Nhận Mật Khẩu:', 'confirm_password').'<br />'; ?>
-                    <?php echo form_error('confirm_password'); ?>
-                    <?php echo form_password('confirm_password', '','class="form-control"').'<br />'; ?>
-                </div>
-                <?php echo form_submit('submit','Đăng Ký', 'class="btn btn-primary btn-lg btn-block"').'<br /><br />'; ?>
-            <?php echo form_close(); ?>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+	            <div class="col-xs-12" style="float: right;">
+	            	<span class="btn btn-primary" style="margin-left:5px " class="close" data-dismiss="modal" aria-label="Close">Hủy</span>
+	            	<span class="btn btn-primary">Xác nhận</span>
+	            </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+<?php endif; ?>
 
 <!-- jQuery -->
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
