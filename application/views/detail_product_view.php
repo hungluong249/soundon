@@ -375,15 +375,13 @@
 		<div class="section container" id="review">
 			<div class="section-heading justify-content-between">
 				<h2 class="title-md">Review</h2>
-
-				<button class="btn btn-light" type="button">Write a Review</button>
+				<button class="btn btn-light" type="button"  data-toggle="modal" data-target="#comment" data-whatever="@getbootstrap">Write a Review</button>
 			</div>
 			<div class="section-content">
 				<div class="row head">
 					<div class="col-xs-12 col-lg-12">
 						<div class="d-flex justify-content-between">
 							<h3 class="title-sm">Overall rating</h3>
-
 							<ul class="list-inline star-rating">
 								<li class="list-inline-item"><i class="fas fa-star"></i></li>
 								<li class="list-inline-item"><i class="fas fa-star"></i></li>
@@ -599,3 +597,8 @@
 
     </div>
 </section>
+<script type="text/javascript">
+    function write_review(){
+
+    }
+</script>
