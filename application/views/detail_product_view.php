@@ -375,7 +375,8 @@
 		<div class="section container" id="review">
 			<div class="section-heading justify-content-between">
 				<h2 class="title-md">Review</h2>
-				<button class="btn btn-light" type="button"  data-toggle="modal" data-target="#comment" data-whatever="@getbootstrap">Write a Review</button>
+                <?php $check_username = empty($username) ? '#login' : '#comment'; ?>
+				<button class="btn btn-light" type="button"  data-toggle="modal" data-target="<?php echo $check_username; ?>" data-whatever="@getbootstrap">Write a Review</button>
 			</div>
 			<div class="section-content">
 				<div class="row head">

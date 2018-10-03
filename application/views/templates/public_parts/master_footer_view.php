@@ -151,12 +151,47 @@
 		            <?php echo form_submit('submit', 'Log in', 'class="btn btn-primary btn-lg btn-block"'); ?>
 		        </div>
 		        <?php echo form_close(); ?>
-		        <a href="<?php echo base_url('admin/user/forgot_password') ?>">Quên mật khẩu</a><br>
+		        <label>
+				<a style="color: blue;font-size: 1.2rem;font-weight: normal;" href="<?php echo base_url('')?>" data-toggle="modal" data-target="#forgot_password" data-whatever="@getbootstrap"  class="close" data-dismiss="modal" aria-label="Close">
+					Quên mật khẩu
+				</a></label><br>
 		    </div>
 	      </div>
 	    </div>
 	  </div>
 	</div>
+
+	<div class="modal fade" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="forgot_passwordLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="forgot_passwordLabel">Forgot password</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+		    <div class="login-box-body">
+		        <p class="login-box-msg">Quên mật khẩu</p>
+
+		        <?php echo $this->session->flashdata('message'); ?>
+		        <?php echo form_open('', array('class' => 'form-horizontal')); ?>
+		        <div class="form-group">
+		            <?php echo form_label('Email', 'email'); ?>
+		            <?php echo form_error('email'); ?>
+		            <?php echo form_input('email', '', 'class="form-control"'); ?>
+		        </div>
+		        <div class="form-group">
+		            <?php echo form_submit('submit', 'Xác Nhận', 'class="btn btn-primary btn-lg btn-block"'); ?>
+		        </div>
+
+		        <?php echo form_close(); ?>
+		    </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
 	<div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
