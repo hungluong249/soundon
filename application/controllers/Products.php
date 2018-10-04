@@ -193,7 +193,6 @@ class Products extends Public_Controller {
     public function detail($id){
         $this->data['result'] = $this->value;
         $this->data['detail'] = $this->value[$id];
-
         //echo '<pre>';
         //print_r($this->data['detail']);die;
 

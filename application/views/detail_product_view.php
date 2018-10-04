@@ -373,10 +373,31 @@
         </div>
 
 		<div class="section container" id="review">
+            <div class="section-heading justify-content-between">
+                <h2 class="title-md">Review</h2>
+                <?php $check_username = empty($username->id) ? '#login"' : '#commentt" onclick="write_review()"'; ?>
+                <button class="btn btn-light" type="button"  data-toggle="modal" data-target="<?php echo $check_username; ?> data-whatever="@getbootstrap">Write a Review</button>
+            </div>
 			<div class="section-heading justify-content-between">
-				<h2 class="title-md">Review</h2>
-                <?php $check_username = empty($username) ? '#login' : '#comment'; ?>
-				<button class="btn btn-light" type="button"  data-toggle="modal" data-target="<?php echo $check_username; ?>" data-whatever="@getbootstrap">Write a Review</button>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <h3 class="title-md" style="float: left;">Rating: </h3>
+                        
+                        <ul class="list-inline star-rating" style="float: left;margin-top: 5px;">
+                            <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                            <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                            <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                            <li class="list-inline-item"><i class="fas fa-star"></i></li>
+                            <li class="list-inline-item"><i class="fas fa-star-half-alt"></i></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <input type="text" class="form-control" aria-label="Text input with dropdown button">
+                    </div>
+                    <div class="col-sm-4 col-md-2">
+                        <input type="button" class="btn form-control" value="Comment" aria-label="Text input with dropdown button">
+                    </div>
+                </div>
 			</div>
 			<div class="section-content">
 				<div class="row head">
@@ -600,6 +621,6 @@
 </section>
 <script type="text/javascript">
     function write_review(){
-
+        console.log(1);
     }
 </script>
