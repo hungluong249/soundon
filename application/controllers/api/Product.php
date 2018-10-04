@@ -185,7 +185,7 @@ class Product extends REST_Controller
             $this->set_response([
                 'status' => FALSE,
                 'message' => 'product could not be found'
-            ], REST_Controller::HTTP_NO_CONTENT); // NOT_FOUND (404) being the HTTP response code
+            ], REST_Controller::HTTP_NO_CONTENT); // NOT_FOUND (204) being the HTTP response code
         }
     }
 

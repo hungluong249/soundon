@@ -90,7 +90,7 @@ class User extends MY_Controller {
                 'first_name' => $first_name,
                 'last_name' => $last_name
             );
-            $group = array('2','3');
+            $group = array('2');
             $this->load->library('ion_auth');
             if($this->ion_auth->register($username, $password, $email, $additional_data, $group)){
                 $this->session->set_flashdata('auth_message', 'Đăng ký tài khoản thành công!.');

@@ -1001,7 +1001,7 @@ class Ion_auth_model extends CI_Model
 				{
 					$this->trigger_events('post_login_unsuccessful');
 					$this->set_error('login_unsuccessful_not_active');
-					echo 1;die;
+					// echo 1;die;
 					return FALSE;
 				}
 				$this->set_session($user);
