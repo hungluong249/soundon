@@ -22,11 +22,6 @@ class MY_Controller extends CI_Controller {
         } else {
             $this->data['the_view_content'] = (is_null($the_view)) ? '' : $this->load->view($the_view, $this->data, TRUE);
             $this->data['lang'] = $this->langAbbreviation;
-            $this->load->library('ion_auth');
-            if ($this->ion_auth->in_group('members_client') && $template == 'master') {
-                //redirect them to the login page
-                $this->data['username'] = $this->ion_auth->user()->row();
-            }
             $this->load->view('templates/' . $template . '_view', $this->data);
         }
     }
@@ -221,6 +216,11 @@ class Public_Controller extends MY_Controller {
             $this->config->set_item('language', $langName); 
             $this->session->set_userdata("langAbbreviation",'en');
             $this->lang->load('english_lang', 'english');
+        }
+        $this->load->library('ion_auth');
+        if ($this->ion_auth->in_group('members_client')) {
+            //redirect them to the login page
+            $this->data['username'] = $this->ion_auth->user()->row();
         }
         
     }
