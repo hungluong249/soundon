@@ -378,9 +378,9 @@
                 <?php $check_username = empty($username->id) ? '#login"' : '#commentt" onclick="write_review()"'; ?>
                 <button class="btn btn-light" type="button"  data-toggle="modal" data-target="<?php echo $check_username; ?> data-whatever="@getbootstrap">Write a Review</button>
             </div>
-			<div class="section-heading justify-content-between">
+			<div id="popup-comment" style="padding: 0px 15px;background:#e7e7e7;display: none;">
                 <div class="row">
-                    <div class="col-sm-12 col-md-3">
+                    <div class="col-md-6 col-12">
                         <h3 class="title-md" style="float: left;">Rating: </h3>
                         
                         <ul class="list-inline star-rating" style="float: left;margin-top: 5px;">
@@ -391,11 +391,11 @@
                             <li class="list-inline-item"><i class="fas fa-star-half-alt"></i></li>
                         </ul>
                     </div>
-                    <div class="col-sm-12 col-md-7">
+                    <div class="col-md-4 col-7">
                         <input type="text" class="form-control" aria-label="Text input with dropdown button">
                     </div>
-                    <div class="col-sm-4 col-md-2">
-                        <input type="button" class="btn form-control" value="Comment" aria-label="Text input with dropdown button">
+                    <div class="col-md-2 col-5">
+                        <input type="button" class="btn form-control" value="Comment" onclick="comment()" aria-label="Text input with dropdown button">
                     </div>
                 </div>
 			</div>
@@ -621,6 +621,10 @@
 </section>
 <script type="text/javascript">
     function write_review(){
-        console.log(1);
+        document.getElementById('popup-comment').style.display = 'block';
+    }
+    function comment(){
+        document.querySelector('#popup-comment input').value = '';
+        document.getElementById('popup-comment').style.display = 'none';
     }
 </script>
