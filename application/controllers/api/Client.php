@@ -107,4 +107,47 @@ class Client extends REST_Controller
             ], REST_Controller::HTTP_OK); // NOT_FOUND (204) being the HTTP response code
 		}
 	}
+
+	public function forgotPassword_post()
+	{
+		$email = $this->post('email');
+
+		if (!$this->ion_auth->email_check($email)){
+            $this->set_response(['data' => FALSE, 'message' => 'Email không đúng'], REST_Controller::HTTP_OK);
+        }else{
+            $forgotten = $this->ion_auth->forgotten_password($email);
+            $config = [
+                'protocol' => 'smtp',
+                'smtp_host' => 'ssl://smtp.googlemail.com',
+                'smtp_port' => 465,
+                'smtp_user' => 'nghemalao@gmail.com',
+                'smtp_pass' => 'Huongdan1',
+                'smtp_port' => '465',
+                'mailtype' => 'html'
+            ];
+            $data = array(
+                'identity'=>$forgotten['identity'],
+                'forgotten_password_code' => $forgotten['forgotten_password_code'],
+            );
+            $this->load->library('email');
+            $this->email->initialize($config);
+            $this->load->helpers('url');
+            $this->email->set_newline("\r\n");
+
+            $this->email->from('nghemalao@gmail.com');
+            $this->email->to($email);
+            $this->email->subject("forgot password");
+            $body = $this->load->view('auth/email/forgot_password.tpl.php',$data,TRUE);
+            $this->email->message($body);
+
+            if ($this->email->send()) {
+                $this->set_response(['data' => TRUE, 'message' => 'success'], REST_Controller::HTTP_OK);
+            } 
+            else {
+                $this->set_response(['data' => FALSE, 'message' => 'Không gửi được Email'], REST_Controller::HTTP_OK);
+                // show_error($this->email->print_debugger());
+            }
+        }
+        
+	}
 }

@@ -454,6 +454,7 @@ $config['csrf_exclude_uris'] = array(
 	'api/client/register',
 	'api/client/changeUser',
 	'api/client/changePassword',
+	'api/client/forgotPassword',
 );
 
 /*

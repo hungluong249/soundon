@@ -168,9 +168,12 @@ class Product extends REST_Controller
             $category_id = $category['id'];
             $total_rows  = $this->product_model->count_by_category_id($lang, $category_id);
         }
+
         $config = $this->pagination_config($base_url, $total_rows, $per_page, $uri_segment);
         $this->pagination->initialize($config);
         $result = $this->product_model->get_product_by_change_with_pagination_api('desc', $type, $lang, $per_page, $page, $features, $trademark, $price, $category_id);
+        // echo '<pre>';
+        // print_r($total_rows);die;
         foreach ($result as $key => $value) {
             $result[$key]['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($result[$key]['features']));
             $result[$key]['common'] = json_decode($result[$key]['common'],true);
