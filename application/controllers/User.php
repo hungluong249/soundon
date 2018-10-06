@@ -246,9 +246,9 @@ class User extends MY_Controller {
                             if($this->ion_auth->update($user->id, $data)){
                                 $this->ion_auth->clear_forgotten_password_code($code);
                                 $this->session->set_flashdata('auth_message', $this->ion_auth->messages());
-                                redirect("admin/user/login", 'refresh');
+                                redirect("http://localhost:3000/", 'refresh');
                             }else{
-                                redirect('admin/user/reset_password/' . $code, 'refresh');
+                                redirect('user/reset_password/' . $code, 'refresh');
                             }
                             
                         }
