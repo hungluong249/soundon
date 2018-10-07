@@ -18,6 +18,8 @@ class Product extends REST_Controller
         $this->load->model('features_model');
         $this->load->model('product_category_model');
 		$this->load->model('color_model');
+        $this->load->helper('date');
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
 	}
 
 	public function getAllProduct_post()
@@ -42,8 +44,6 @@ class Product extends REST_Controller
         $config = $this->pagination_config($base_url, $total_rows, $per_page, $uri_segment);
         $this->pagination->initialize($config);
 		$result = $this->product_model->get_all_with_pagination_search_api('desc', $lang, $per_page, $page, $category_id);
-        // echo '<pre>';
-        // print_r($result);die;
 		foreach ($result as $key => $value) {
         	$result[$key]['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($result[$key]['features']));
             $result[$key]['common'] = json_decode($result[$key]['common'],true);
@@ -72,6 +72,12 @@ class Product extends REST_Controller
         $result['common'] = json_decode($result['common'],true);
         $result['data_lang'] = json_decode($result['data_lang'],true);
         $result['data'] = json_decode($result['data'],true);
+        if ($result['count_rating'] > 0) {
+            $result['rating'] = round($result['total_rating'] / $result['count_rating'] * 2)/2;
+        }else{
+            $result['rating'] = 0;
+        }
+        
         if (!empty($result))
         {
             $this->set_response($result, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -155,15 +161,12 @@ class Product extends REST_Controller
 
         $base_url = base_url('api/product/getproductbyfeatures');
         $total_rows  = $this->product_model->count_product_by_change($type, $lang, $features, $trademark, $category_id);
-        $per_page = 4;
+        $per_page = 2;
         $uri_segment = 4;
         $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
 
         
         if($slug != ''){
-            // $total_rows  = $this->product_model->count_by_feature_id($lang, $features, $category_id);
-            // $uri_segment = 5;
-            // $page = ($this->uri->segment(5)) ? $this->uri->segment(5) : 0;
             $category = $this->product_category_model->get_by_slug($slug);
             $category_id = $category['id'];
             $total_rows  = $this->product_model->count_by_category_id($lang, $category_id);
@@ -172,8 +175,6 @@ class Product extends REST_Controller
         $config = $this->pagination_config($base_url, $total_rows, $per_page, $uri_segment);
         $this->pagination->initialize($config);
         $result = $this->product_model->get_product_by_change_with_pagination_api('desc', $type, $lang, $per_page, $page, $features, $trademark, $price, $category_id);
-        // echo '<pre>';
-        // print_r($total_rows);die;
         foreach ($result as $key => $value) {
             $result[$key]['features'] = $this->features_model->get_libraryfeatures_by_id_array(json_decode($result[$key]['features']));
             $result[$key]['common'] = json_decode($result[$key]['common'],true);
@@ -189,6 +190,48 @@ class Product extends REST_Controller
                 'status' => FALSE,
                 'message' => 'product could not be found'
             ], REST_Controller::HTTP_NO_CONTENT); // NOT_FOUND (204) being the HTTP response code
+        }
+    }
+
+    public function addComment_get()
+    {
+        $this->load->model('comment_model');
+        $user_id = $this->get('userId');
+        $product_id = $this->get('productId');
+        $rating = $this->get('rating');
+        $message = nl2br($this->get('message'));
+        // echo $user_id;die;
+        $product = $this->product_model->get_by_id_wo_lang($product_id);
+        $count_rating = $product['count_rating'] + 1;
+        $total_rating = $product['total_rating'] + $rating;
+        $this->db->trans_begin();
+        $data_comment = array(
+            'product_id' => $product_id,
+            'user_id' => $user_id,
+            'content' => $message,
+            'rating' => $rating,
+            'created_at' => date('Y-m-d H:i:s', now()),
+            'updated_at' => date('Y-m-d H:i:s', now()),
+        );
+        $insert_comment = $this->comment_model->common_insert($data_comment);
+        $comment = array();
+        if($insert_comment){
+            $comment = $this->comment_model->get_comment_by_id($insert_comment);
+            $data_product = array(
+                'count_rating' => $count_rating,
+                'total_rating' => $total_rating,
+            );
+            $update_product = $this->product_model->common_update($product_id, $data_product);
+            if($update_product && $count_rating != 0){
+                $total = round($total_rating / $count_rating, 1);
+            }
+        };
+        if ($this->db->trans_status() === false) {
+            $this->db->trans_rollback();
+            $this->set_response(['total' => $total, 'message' => 'error'], REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+        } else {
+            $this->db->trans_commit();
+            $this->set_response(['comment' => $comment, 'total' => $total, 'message' => 'success'], REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }
     }
 

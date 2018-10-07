@@ -20,7 +20,14 @@ class Comment_model extends MY_Model{
     	// $this->db->where()->limit($limit, $start);
         // return $this->db->get($this->table)->result_array();
     }
-
+    public function get_comment_by_id($id)
+    {
+        $this->db->select('comment.*, users.last_name, users.first_name, users.email');
+        $this->db->from($this->table);
+        $this->db->join('users','users.id = comment.user_id');
+        $this->db->where(array('comment.id' => $id,'is_deleted' => 0,'is_activated' => 0));
+        return $result = $this->db->get()->row_array();
+    }
     public function count_search_without_by_product_id($product_id){
         $this->db->select('*');
         $this->db->from($this->table);
