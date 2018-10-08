@@ -72,6 +72,7 @@ class Product extends REST_Controller
         $result['common'] = json_decode($result['common'],true);
         $result['data_lang'] = json_decode($result['data_lang'],true);
         $result['data'] = json_decode($result['data'],true);
+        $result['templates'] = array_slice(json_decode($result['data_templates'],true), 8);
         if ($result['count_rating'] > 0) {
             $result['rating'] = round($result['total_rating'] / $result['count_rating'] * 2)/2;
         }else{
