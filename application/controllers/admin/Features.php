@@ -37,6 +37,7 @@ class Features extends Admin_Controller {
             $this->form_validation->set_rules('en', 'Tính năng tiếng Anh', 'required');
             if($this->form_validation->run() == TRUE){
                 $features_request = array(
+                    'icon' => $this->input->post('icon'),
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
                     'en' => mb_convert_case($this->input->post('en'), MB_CASE_TITLE, "UTF-8"),
                     'content_vi' => $this->input->post('content_vi'),
@@ -63,6 +64,7 @@ class Features extends Admin_Controller {
             $this->form_validation->set_rules('en', 'Tính năng tiếng Anh', 'required');
             if($this->form_validation->run() === true){
                 $features_request = array(
+                    'icon' => $this->input->post('icon'),
                     'vi' => mb_convert_case($this->input->post('vi'), MB_CASE_TITLE, "UTF-8"),
                     'en' => mb_convert_case($this->input->post('en'), MB_CASE_TITLE, "UTF-8"),
                     'content_vi' => $this->input->post('content_vi'),
@@ -79,6 +81,23 @@ class Features extends Admin_Controller {
             }
         }
         $this->render('admin/features/edit_features_view');
+    }
+    public function detail($id){
+        if($id &&  is_numeric($id) && ($id > 0)){
+            if($this->features_model->find_rows(array('id' => $id,'is_deleted' => 0)) != 0){
+                $this->load->helper('form');
+                $this->load->library('form_validation');
+                $detail = $this->features_model->find($id);
+                $this->data['detail'] = $detail;
+                $this->render('admin/features/detail_features_view');
+            }else{
+                $this->session->set_flashdata('message_error',MESSAGE_ISSET_ERROR);
+                redirect('admin/features', 'refresh');
+            }
+        }else{
+            $this->session->set_flashdata('message_error',MESSAGE_ID_ERROR);
+            return redirect('admin/'.$this->data['controller'],'refresh');
+        }
     }
     function remove(){
         $id = $this->input->post('id');
