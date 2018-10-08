@@ -104,6 +104,10 @@
                                                         <th>Loại sản phẩm</th>
                                                         <td>Sản phẩm <?php echo ($detail['type'] == 0)? 'mới' : 'cũ';?></td>
                                                     </tr>
+                                                    <tr>
+                                                        <th>File</th>
+                                                        <td><a href="<?php echo base_url('assets/upload/product/'.$detail['slug'].'/file/'.$detail['file']); ?>" download="<?php echo $detail['file'];?>"><?php echo $detail['file'];?></a> <span style="opacity: .7">Click để download</span></td>
+                                                    </tr>
                                                     <?php if (!empty($data)): ?>
                                                         <?php foreach ($data as $key => $value): ?>
                                                             <?php if ($templates[$key]['type'] != 'radio' && $templates[$key]['type'] != 'checkbox' && $templates[$key]['type'] != 'select' && $templates[$key]['type'] != 'file'): ?>
