@@ -64,6 +64,11 @@ class Product extends Admin_Controller{
             $this->build_new_category($product_category,0,$this->data['product_category']);
             if($this->input->post()){
                 $this->load->library('form_validation');
+                if($_FILES['file_shared']['size'] <= 1228800 && !empty($_FILES['file_shared']['name'])){
+                    $file_shared = $_FILES['file_shared'];
+                    $file_shared['name'] = $this->str_slug(strtolower($file_shared['name']));
+                }
+                unset($_FILES['file_shared']);
                 if($this->check_all_file_img($_FILES) === false){
                     return false;
                 }
@@ -73,7 +78,12 @@ class Product extends Admin_Controller{
                 $request_data = handle_multi_language_requests($this->input->post(), $this->page_languages, $templates);
                 if(!file_exists("assets/upload/".$this->data['controller']."/".$unique_slug)){
                     mkdir("assets/upload/".$this->data['controller']."/".$unique_slug, 0755);
-                    mkdir("assets/upload/".$this->data['controller']."/".$unique_slug.'/thumb', 0755);
+                    mkdir("assets/upload/".$this->data['controller']."/".$unique_slug."/thumb", 0755);
+                    mkdir("assets/upload/".$this->data['controller']."/".$unique_slug."/file", 0755);
+                }
+                if(isset($file_shared)){
+                    move_uploaded_file($file_shared['tmp_name'], "assets/upload/".$this->data['controller']."/".$unique_slug."/file/" . strtolower($file_shared['name']));
+                    $file = strtolower($file_shared['name']);
                 }
                 $image = $this->upload_image('image_shared', $_FILES['image_shared']['name'], 'assets/upload/'. $this->data['controller'].'/'.$unique_slug, 'assets/upload/'.$this->data['controller'].'/'.$unique_slug.'/thumb');
                 unset($_FILES['image_shared']);
@@ -111,6 +121,9 @@ class Product extends Admin_Controller{
                     'common' => json_encode($common),
                     'type' => $this->input->post('type_product')
                 );
+                if(!empty($file)){
+                    $shared_request['file'] = $file;
+                }
                 $this->db->trans_begin();
                 $insert = $this->product_model->common_insert(array_merge($shared_request,$this->author_data));
                 if($insert){
@@ -211,8 +224,10 @@ class Product extends Admin_Controller{
                     'csrf_hash' => $this->security->get_csrf_hash()
                 );
                 array_map('unlink', glob('./assets/upload/product/'.$product['slug'].'/thumb/*.*'));
+                array_map('unlink', glob('./assets/upload/product/'.$product['slug'].'/file/*.*'));
                 array_map('unlink', glob('./assets/upload/product/'.$product['slug'].'/*.*'));
                 rmdir('./assets/upload/product/'.$product['slug'].'/thumb');
+                rmdir('./assets/upload/product/'.$product['slug'].'/file');
                 rmdir('./assets/upload/product/'.$product['slug']);
                 return $this->return_api(HTTP_SUCCESS,MESSAGE_REMOVE_SUCCESS,$reponse);
             }
@@ -245,6 +260,12 @@ class Product extends Admin_Controller{
             $this->build_new_category($product_category,0,$this->data['product_category'],$subs['product_category_id']);
             $this->data['detail'] = build_language($this->data['controller'], $detail, array('title','description','content', 'data_lang'), $this->page_languages);
             if($this->input->post()){
+                if($_FILES['file_shared']['size'] <= 1228800 && !empty($_FILES['file_shared']['name'])){
+                    $file_shared = $_FILES['file_shared'];
+                    $file_shared['name'] = $this->str_slug($file_shared['name']);
+                    $file = $file_shared['name'];
+                }
+                unset($_FILES['file_shared']);
                 if($this->check_all_file_img($_FILES) === false){
                     return false;
                 }
@@ -294,6 +315,9 @@ class Product extends Admin_Controller{
                 if($image){
                     $shared_request['image'] = $image;
                 }
+                if(!empty($file)){
+                    $shared_request['file'] = $file;
+                }
                 $this->db->trans_begin();
                 $update = $this->product_model->common_update($id,array_merge($shared_request,$this->author_data));
                 if($update){
@@ -309,6 +333,10 @@ class Product extends Admin_Controller{
                     $this->db->trans_commit();
                     if($image != '' && !empty($detail['image'])) {
                         $this->remove_img($unique_slug,$detail['image']);
+                    }
+                    if(isset($file_shared)){
+                        array_map('unlink', glob('./assets/upload/product/'.$detail['slug'].'/file/*.*'));
+                        move_uploaded_file($file_shared['tmp_name'], "assets/upload/".$this->data['controller']."/".$unique_slug."/file/" . $file);
                     }
                     foreach ($check_file as $key => $value) {
                         if(!isset($this->data['templates'][$key]['check_multiple'])){

@@ -296,6 +296,15 @@
                                                 <option value="1" <?php echo ($detail['type'] == 1)?' selected': ''; ?>>Product old</option>
                                             </select>
                                         </div>
+                                        <div class="form-group col-xs-12">
+                                            <div class="col-md-12">
+                                                <?php
+                                                    echo form_label('File hướng dẫn sử dụng (<i>Lưu ý file phải nhỏ hơn 1.2MB</i>)', 'file_shared');
+                                                    echo form_error('file_shared');
+                                                    echo form_upload('file_shared', set_value('file_shared'), 'class="form-control"');
+                                                ?>
+                                            </div> 
+                                        </div>
                                         <div class="col-md-12" style="padding: 0px;margin-bottom: 10px;">
                                             <label class="col-md-12" for="">
                                                     Số màu của sản phẩm
