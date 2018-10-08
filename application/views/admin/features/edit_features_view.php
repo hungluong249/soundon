@@ -34,6 +34,16 @@
                                     <span><?php echo $this->session->flashdata('message'); ?></span>
                                 </div>
 
+                                <div class="col-xs-12">
+                                    <div>
+                                        <i class="fa-3x <?php echo $detail['icon']; ?>"></i>
+                                    </div>
+                                    <?php
+                                        echo form_label("Icon cho tính năng <a href='https://www.w3schools.com/icons/fontawesome_icons_webapp.asp' target ='_blank'>Click để tìm icon Font Awesome</a><i> (Lưu ý chỉ sử dụng icon fa)</i>", 'icon');
+                                        echo form_error('icon');
+                                        echo form_input('icon', $detail['icon'], 'class="form-control" ');
+                                    ?>
+                                </div>
                                 <div class="col-xs-12" style="padding-top: 5px;"> 
                                     <ul class="nav nav-pills nav-justified" role="tablist">
                                         <?php $i = 0; ?>

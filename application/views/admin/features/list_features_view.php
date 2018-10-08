@@ -62,8 +62,9 @@
                                 <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Tên tính năng tiếng Việt</th>
-                                    <th>Tên tính năng tiếng Anh</th>
+                                    <th>Tên tính năng</th>
+                                    <th>Icon tính năng</th>
+                                    <th>Chi tiết</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -73,7 +74,10 @@
                                         <tr class="remove_<?php echo $value['id']; ?>">
                                             <td><?php echo $key+1 ?></td>
                                             <td><?php echo $value['vi'] ?></td>
-                                            <td><?php echo $value['en'] ?></td>
+                                            <td><i class="fa-2x <?php echo $value['icon']; ?>"></i></td>
+                                            <td>
+                                                <a href="<?php echo base_url('admin/'.$controller.'/detail/'.$value['id']) ?>" class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapse_1" aria-expanded="false" aria-controls="collapse_1">See Detail</a>
+                                            </td>
                                             <td>
                                                 <a href="<?php echo base_url('admin/'.$controller.'/edit/'. $value['id']) ?>" class="dataActionEdit" title="Sửa địa điểm"><i class="fa fa-pencil" aria-hidden="true"></i> </a>
                                                 &nbsp&nbsp&nbsp
@@ -84,8 +88,9 @@
                                     <?php if (count($result) > 5): ?>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Tên tính năng tiếng Việt</th>
-                                            <th>Tên tính năng tiếng Anh</th>
+                                            <th>Tên tính năng</th>
+                                            <th>Icon tính năng</th>
+                                            <th>Chi tiết</th>
                                             <th>Action</th>
                                         </tr>
                                     <?php endif ?>
