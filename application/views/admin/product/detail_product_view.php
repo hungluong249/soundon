@@ -106,7 +106,15 @@
                                                     </tr>
                                                     <tr>
                                                         <th>File</th>
-                                                        <td><a href="<?php echo base_url('assets/upload/product/'.$detail['slug'].'/file/'.$detail['file']); ?>" download="<?php echo $detail['file'];?>"><?php echo $detail['file'];?></a> <span style="opacity: .7">Click để download</span></td>
+                                                        <td>
+                                                            <?php if (!empty($detail['file'])): ?>
+                                                                
+                                                                <a href="<?php echo base_url('assets/upload/product/'.$detail['slug'].'/file/'.$detail['file']); ?>" download="<?php echo $detail['file'];?>"><?php echo $detail['file'];?></a> 
+                                                                <span style="opacity: .7">Click để download</span>
+                                                            <?php else:?>
+                                                                Chưa có file nào.
+                                                            <?php endif ?>
+                                                        </td>
                                                     </tr>
                                                     <?php if (!empty($data)): ?>
                                                         <?php foreach ($data as $key => $value): ?>

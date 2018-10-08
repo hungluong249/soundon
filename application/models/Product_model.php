@@ -130,9 +130,11 @@ class Product_model extends MY_Model{
     }
 
     public function get_by_slug_api($slug, $lang = '') {
-        $this->db->select($this->table .'.*, product_lang.title as title, product_lang.description as description, product_lang.content as content, product_lang.data_lang as data_lang');
+        $this->db->select($this->table .'.*, product_lang.title as title, product_lang.description as description, product_lang.content as content, product_lang.data_lang as data_lang, templates.data as data_templates, trademark.vi as trademark_title');
         $this->db->from($this->table);
         $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id', 'left');
+        $this->db->join('templates', 'templates.id = '. $this->table .'.templates_id', 'left');
+        $this->db->join('trademark', 'trademark.id = '. $this->table .'.trademark_id', 'left');
         if($lang != ''){
             $this->db->where($this->table_lang .'.language', $lang);
         }
