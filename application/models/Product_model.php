@@ -311,7 +311,7 @@ class Product_model extends MY_Model{
         return $result = $this->db->get()->result_array();
     }
 
-    public function count_product_by_change($type, $lang = '',$feature_id = array(), $trademark_id = '', $category = ''){
+    public function count_product_by_change($type, $lang = '',$feature_id = array(), $trademark_id = '', $price = null,$category = ''){
         $this->db->select('*');
         $this->db->from($this->table);
         $this->db->join($this->table_lang, $this->table_lang .'.'. $this->table .'_id = '. $this->table .'.id');
@@ -326,6 +326,25 @@ class Product_model extends MY_Model{
         }
         if($category != ''){
             $this->db->where($this->table .'.product_category_id', $category);
+        }
+        if ($price != null) {
+            switch ($price) {
+                case 0:
+                    $this->db->where("product.price REGEXP '(.)*".'(")'."([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|200)".'(")'."(.)*'");
+                    break;
+                case 1:
+                    $this->db->where("product.price REGEXP '(.)*".'(")'."(20[1-9]|2[1-9][0-9]|[34][0-9]{2}|500)".'(")'."(.)*'");
+                    break;
+                case 2:
+                    $this->db->where("product.price REGEXP '(.)*".'(")'."(50[1-9]|5[1-9][0-9]|[6-9][0-9]{2}|1000)".'(")'."(.)*'");
+                    break;
+                case 3:
+                    $this->db->where("product.price REGEXP '(.)*".'(")'."(100[1-9]|10[1-9][0-9]|1[1-9][0-9]{2}|[2-9][0-9]{3}|[1-8][0-9]{4}|9[0-8][0-9]{3}|99[0-8][0-9]{2}|999[0-8][0-9]|9999[0-9]|[1-8][0-9]{5}|9[0-8][0-9]{4}|99[0-8][0-9]{3}|999[0-8][0-9]{2}|9999[0-8][0-9]|99999[0-9]|[1-8][0-9]{6}|9[0-8][0-9]{5}|99[0-8][0-9]{4}|999[0-8][0-9]{3}|9999[0-8][0-9]{2}|99999[0-8][0-9]|999999[0-9]|[1-8][0-9]{7}|9[0-8][0-9]{6}|99[0-8][0-9]{5}|999[0-8][0-9]{4}|9999[0-8][0-9]{3}|99999[0-8][0-9]{2}|999999[0-8][0-9]|9999999[0-9]|100000000)".'(")'."(.)*'");
+                    break;
+                default:
+                    $this->db->like($this->table .'.price', '');
+                    break;
+            }
         }
         if($lang != ''){
             $this->db->where($this->table_lang .'.language', $lang);

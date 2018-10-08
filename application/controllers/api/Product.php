@@ -161,7 +161,7 @@ class Product extends REST_Controller
         $config = array();
 
         $base_url = base_url('api/product/getproductbyfeatures');
-        $total_rows  = $this->product_model->count_product_by_change($type, $lang, $features, $trademark, $category_id);
+        $total_rows  = $this->product_model->count_product_by_change($type, $lang, $features, $trademark, $price, $category_id);
         $per_page = 2;
         $uri_segment = 4;
         $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
