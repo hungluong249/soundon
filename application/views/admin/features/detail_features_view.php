@@ -121,3 +121,36 @@
         <!-- END ACCORDION & CAROUSEL-->
     </section>
 </div>
+<script>
+  $(function () {
+    //Date picker
+    var disabled_dates  = ["2018-10-14","2018-10-15","2018-103-16"];
+    $("#datepicker").datepicker({
+      language: "pl",
+      autoclose: true,
+      //removed line: startDate: '+1d',
+      weekStart: 1,
+      default: 'dd.mm.yyyy',
+      beforeShowDay: function(date){
+           var formattedDate = $.fn.datepicker.DPGlobal.formatDate(date, 'dd.mm.yyyy', 'pl');
+           if ($.inArray(formattedDate.toString(), disabled_dates) != -1){
+               return {
+                  enabled : false
+               };
+           }
+          return;
+      }
+  });
+    
+    // $('#datepicker').datepicker({
+    //   format: 'dd/mm/yyyy',
+    //   multidate:true,
+    //     beforeShowDay: function (date) {
+    //         var day = date.getDay(),
+    //                 bDisable = array[date];
+    //         if (bDisable)
+    //             return [false, "", ""]
+    //     }
+    // })
+  })
+</script>
