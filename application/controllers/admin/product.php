@@ -65,8 +65,9 @@ class Product extends Admin_Controller{
             if($this->input->post()){
                 $this->load->library('form_validation');
                 if($_FILES['file_shared']['size'] <= 1228800 && !empty($_FILES['file_shared']['name'])){
+                    $this->load->library('str_slug');
                     $file_shared = $_FILES['file_shared'];
-                    $file_shared['name'] = $this->str_slug(strtolower($file_shared['name']));
+                    $file_shared['name'] = $this->str_slug->str_slug(strtolower($file_shared['name']),'-','image');
                 }
                 unset($_FILES['file_shared']);
                 if($this->check_all_file_img($_FILES) === false){
@@ -261,8 +262,9 @@ class Product extends Admin_Controller{
             $this->data['detail'] = build_language($this->data['controller'], $detail, array('title','description','content', 'data_lang'), $this->page_languages);
             if($this->input->post()){
                 if($_FILES['file_shared']['size'] <= 1228800 && !empty($_FILES['file_shared']['name'])){
+                    $this->load->library('str_slug');
                     $file_shared = $_FILES['file_shared'];
-                    $file_shared['name'] = $this->str_slug($file_shared['name']);
+                    $file_shared['name'] = $this->str_slug->str_slug($file_shared['name'],'-','image');
                     $file = $file_shared['name'];
                 }
                 unset($_FILES['file_shared']);
